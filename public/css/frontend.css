@@ -1,0 +1,379 @@
+body,
+html {
+  margin: 0;
+  font: normal 12px/20px 'Lucida Grande', Arial, Sans-Serif;
+}
+body > .navigation {
+  overflow: hidden;
+  background: #4d7bd6;
+  border-bottom: 1px solid #2d53af;
+  padding-left: 20px;
+}
+body > .navigation a {
+  text-decoration: none;
+  float: left;
+  padding: 0 30px 0 20px;
+  line-height: 35px;
+  color: #fff;
+  border-left: 1px solid #6090dd;
+}
+body > .navigation a:hover {
+  background: #6090dd;
+}
+body > .navigation a.active {
+  background: #6090dd;
+}
+body > .filters {
+  background: #ffffd6;
+  border: 1px solid #d8aa00;
+  margin: 20px;
+  padding: 10px;
+}
+body > .filters p {
+  margin: 0;
+}
+body > .filters dl {
+  margin: 5px 0 0 0;
+  overflow: hidden;
+}
+body > .filters dt {
+  float: left;
+  margin: 0;
+  font-weight: bold;
+  width: 100px;
+  padding: 2px 5px;
+  clear: both;
+}
+body > .filters dd {
+  margin: 0 0 0 111px;
+  font-family: monospace;
+  padding: 2px 5px;
+}
+body > .footer {
+  margin: 20px;
+}
+.multidimensional-filter {
+  overflow: hidden;
+  margin: 20px;
+}
+.multidimensional-filter svg {
+  background: #efefef;
+  margin-bottom: 20px;
+}
+.multidimensional-filter g.background rect,
+.multidimensional-filter g.foreground rect {
+  fill: #4581b3;
+  stroke: none;
+  shape-rendering: crispEdges;
+}
+.multidimensional-filter g.foreground rect {
+  fill: #ccc;
+}
+.multidimensional-filter g.axis line,
+.multidimensional-filter g.axis path {
+  fill: none;
+  stroke: #000;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+.multidimensional-filter g.brush rect.extent {
+  fill: steelblue;
+  fill-opacity: .125;
+}
+.multidimensional-filter g.brush .resize path {
+  fill: #eee;
+  stroke: #666;
+}
+.multidimensional-filter .delays,
+.multidimensional-filter .distances {
+  margin-left: 20px;
+}
+.multidimensional-filter rect.scrollbar {
+  fill: #fefefe;
+  stroke: #666;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+.multidimensional-filter g.axis {
+  pointer-events: none;
+}
+code {
+  background: #eee;
+  color: #000;
+  padding: 2px 4px;
+  font-family: monospace;
+}
+form {
+  margin: 20px;
+}
+form .columns {
+  overflow: hidden;
+}
+form .columns .column {
+  overflow: hidden;
+  width: 500px;
+  min-height: 56px;
+  float: left;
+  margin: 0 20px 20px 0;
+}
+form label {
+  margin-bottom: 5px;
+  display: block;
+  overflow: hidden;
+}
+form label.input-text input {
+  border: 1px solid #C1C1C1;
+  border-top-color: #939393;
+  border-bottom-color: #E1E1E1;
+  font-size: 12px;
+  color: #111;
+  padding: 2px;
+  outline: none;
+  background: #FFF;
+  padding: 5px;
+  margin: 0;
+  width: 290px;
+}
+form label div.label {
+  float: left;
+  width: 200px;
+  cursor: pointer;
+  line-height: 27px;
+  margin-right: 10px;
+  font-weight: bold;
+}
+form div.comment {
+  color: #666;
+  line-height: 20px;
+}
+form div.buttons {
+  height: 27px;
+}
+form div.buttons input {
+  border: 1px solid #C7C7C7;
+  border-bottom-color: #999;
+  color: #111;
+  border-radius: 2px;
+  float: left;
+  margin: 0;
+  padding: 6px 10px;
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fafafa), to(#dadada));
+  cursor: pointer;
+}
+form div.buttons input:hover {
+  border-color: #999;
+}
+form div.buttons a {
+  margin-left: 10px;
+  float: left;
+  line-height: 27px;
+}
+/* without this tables don't behave nicely full width + margin */
+.table-wrapper {
+  margin: 20px;
+}
+a {
+  color: #005C9C;
+}
+a[target="_blank"]:after {
+  content: url('../images/icon-url-blank.png');
+  vertical-align: 5px;
+  margin: 0 0 0 3px;
+}
+table {
+  table-layout: fixed;
+  border-collapse: collapse;
+  width: 100%;
+}
+table th,
+table td {
+  padding: 5px;
+  text-align: left;
+  font-size: 12px;
+  padding: 5px;
+  border: 1px solid #e3e3e3;
+}
+table th {
+  font-weight: normal;
+}
+table thead {
+  background: #fff;
+}
+table thead a {
+  font-weight: normal;
+}
+table tbody tr {
+  background: #f3f3f3;
+  border-top: 1px solid #fff;
+}
+table tbody tr td {
+  word-wrap: break-word;
+}
+table tbody tr:hover {
+  background: #ffffcc;
+}
+table th.regular,
+table td.regular {
+  width: 150px;
+}
+table th.date-time {
+  width: 150px;
+}
+table th.heading {
+  text-align: center;
+  vertical-align: middle;
+  width: 400px;
+}
+table.environment th.name {
+  width: 200px;
+}
+table.environment tr.navigation span,
+table.environment span.object {
+  color: #00f;
+  cursor: pointer;
+  text-decoration: underline;
+}
+table.environment tr.navigation span {
+  margin-right: 5px;
+}
+table.aggregated-metrics th.name {
+  width: 200px;
+}
+table.aggregated-metrics tbody th {
+  font-weight: normal;
+}
+table.aggregated-metrics tbody tr.current th {
+  font-weight: bold;
+}
+table.requests th.host,
+table.uris th.host {
+  width: 200px;
+}
+table.requests th.request-method {
+  width: 100px;
+}
+table.hosts th.request-count {
+  width: 100px;
+}
+table.aggregated-callstack th.call-count {
+  width: 100px;
+}
+table.aggregated-callstack span.group {
+  float: right;
+  background: #666;
+  color: #fff;
+  padding: 2px 4px;
+}
+table.aggregated-callstack span.group.g-1 {
+  background: #1f77b4;
+}
+table.aggregated-callstack span.group.g-2 {
+  background: #ff7f0e;
+}
+table.aggregated-callstack span.group.g-3 {
+  background: #2ca02c;
+}
+table.aggregated-callstack span.group.g-4 {
+  background: #d62728;
+}
+table.aggregated-callstack span.group.g-5 {
+  background: #9467bd;
+}
+table.aggregated-callstack span.group.g-6 {
+  background: #8c564b;
+}
+table.aggregated-callstack span.group.g-7 {
+  background: #e377c2;
+}
+table.aggregated-callstack span.group.g-8 {
+  background: #7f7f7f;
+}
+table.aggregated-callstack span.group.g-9 {
+  background: #bcbd22;
+}
+table.aggregated-callstack span.group.g-10 {
+  background: #17becf;
+}
+table th.ay-sort {
+  cursor: pointer;
+  font-weight: bold;
+}
+table th.ay-sort.ay-sort-asc,
+table th.ay-sort.ay-sort-desc {
+  background: #ffffcc;
+}
+table th.ay-sort.ay-sort-asc:after,
+table th.ay-sort.ay-sort-desc:after {
+  margin-left: 5px;
+  color: #666;
+  font-weight: normal;
+}
+table th.ay-sort.ay-sort-asc:after {
+  content: 'asc';
+}
+table th.ay-sort.ay-sort-desc:after {
+  content: 'desc';
+}
+table th.ay-sort:hover {
+  background: #ffffcc;
+}
+table.function-breakdown th.heading {
+  width: 200px;
+}
+table.function-breakdown th.call-count {
+  width: 100px;
+}
+table.function-breakdown tbody {
+  border-top: 5px solid #e3e3e3;
+}
+table.function-breakdown tbody tr.exclusive th {
+  font-weight: normal;
+  color: #666;
+}
+table td.metrics {
+  text-align: right;
+  font-family: monospace;
+}
+table td.metrics span.measure {
+  width: 20px;
+  text-align: right;
+  float: right;
+  color: #666;
+}
+.ay-message-placeholder {
+  margin: 20px;
+}
+.ay-message-placeholder ul {
+  padding: 10px;
+  margin: 10px 0;
+}
+.ay-message-placeholder ul > li {
+  margin: 0!important;
+  padding: 0!important;
+  list-style: none;
+}
+.ay-message-placeholder ul > li > .highlight {
+  font-weight: bold;
+}
+.ay-message-placeholder ul.notice {
+  background: #ffffd6;
+  border: 1px solid #d8aa00;
+}
+.ay-message-placeholder ul.error {
+  background: #FFEBE8;
+  border: 1px solid #DD3C10;
+}
+.ay-message-placeholder ul.success {
+  background: #dceddc;
+  border: 1px solid #51a351;
+}
+.ay-message-placeholder ul.important {
+  background: #f3f7fd;
+  border: 1px solid #3a87ad;
+}
+.ay-message-placeholder ul mark {
+  color: #000;
+  padding: 2px 3px;
+  background: none;
+  font-family: monospace;
+}

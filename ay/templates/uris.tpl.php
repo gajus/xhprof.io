@@ -18,7 +18,7 @@ if(empty($data['discrete']))
 
 $data['aggregated']	= xhprof_format_metrics($data['aggregated']);
 
-require __DIR__ . '/aggregated.inc.tpl.php';
+require __DIR__ . '/summary.inc.tpl.php';
 ?>
 <div class="table-wrapper">
 	<table class="uris ay-sort">

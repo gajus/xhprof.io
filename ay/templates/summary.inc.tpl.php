@@ -1,5 +1,5 @@
 <?php
-$aggregated_metrics	= $xhprof_data_obj->getAggregatedMetrics($_GET['xhprof']['query']);
+$aggregated_metrics	= $xhprof_data_obj->getMetricsSummary();
 
 $labels		= array
 (
@@ -11,7 +11,7 @@ $labels		= array
 ?>
 
 <div class="table-wrapper">
-	<table class="aggregated-metrics">
+	<table class="metrics-summary">
 		<thead>
 			<tr>
 				<th class="name">Parameter</th>

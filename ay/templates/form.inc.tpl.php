@@ -20,12 +20,15 @@
 			<?=ay_input('query[uri_id]', 'URI #')?>
 		</div>
 		<?php endif;?>
+		<div class="column">
+			<?=ay_input('query[dataset_size]', 'Dataset Size', NULL, array('comment' => 'Integer number that defines the maximum number of the most recent requests to aggregate that match the query. Defaults to <mark>1,000</mark>.'))?>
+		</div>
 	</div>
 	
 	<div class="buttons">
 		<input type="submit" value="Filter Data" />
-		<?php if(!empty($template['filters'])):?>
-		<a href="<?=xhprof_url('uris')?>">Reset Filters</a>
+		<?php if(!empty($_GET['xhprof']['query'])):?>
+		<a href="<?=xhprof_url($template['file'])?>">Reset Filters</a>
 		<?php endif;?>
 	</div>
 </form>

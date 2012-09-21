@@ -97,11 +97,15 @@ body > .footer {
 .multidimensional-filter g.axis {
   pointer-events: none;
 }
+mark,
 code {
   background: #eee;
   color: #000;
   padding: 2px 4px;
   font-family: monospace;
+}
+mark {
+  background: #FFC;
 }
 form {
   margin: 20px;
@@ -236,13 +240,13 @@ table.environment span.object {
 table.environment tr.navigation span {
   margin-right: 5px;
 }
-table.aggregated-metrics th.name {
+table.metrics-summary th.name {
   width: 200px;
 }
-table.aggregated-metrics tbody th {
+table.metrics-summary tbody th {
   font-weight: normal;
 }
-table.aggregated-metrics tbody tr.current th {
+table.metrics-summary tbody tr.current th {
   font-weight: bold;
 }
 table.requests th.host,

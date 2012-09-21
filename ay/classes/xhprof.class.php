@@ -43,13 +43,7 @@ class XHProfData
 		    return FALSE;
 	    }
 	    
-	    /*if(!empty($request['environment']))
-	    {
-	    	// This can possibly cause an error if data was trequestcated. Time will show.
-		    $request['environment']	= json_decode($request['environment'], TRUE);
-	    }*/
-	    
-	    $sth	= $this->db->prepare("
+	   $sth	= $this->db->prepare("
 		    SELECT
 		    	`c1`.`ct`,
 		    	`c1`.`wt`,
@@ -192,20 +186,6 @@ class XHProfData
 		
 		$request_id	= $this->db->lastInsertId();
 		
-		// save request data
-		/*$request_data	= array
-		(
-			'$_GET'		=> empty($_GET) ? NULL : $_GET,
-			'$_POST'	=> empty($_POST) ? NULL : $_POST,
-			'$_COOKIE'	=> empty($_COOKIE) ? NULL : $_COOKIE,
-			'$_SESSION'	=> session_id() == '' ? NULL : $_SESSION
-		);
-		
-		$request_data	= array_filter($request_data);
-		
-		array_multisort($request_data);*/		
-		
-		
 		$sth1	= $this->db->prepare("INSERT INTO `calls` SET `request_id` = :request_id, `ct` = :ct, `wt` = :wt, `cpu` = :cpu, `mu` = :mu, `pmu` = :pmu, `caller_id` = :caller_id, `callee_id` = :callee_id;");
 		
 		$sth2	= $this->db->prepare("SELECT `id` FROM `players` WHERE `name` = :name;");
@@ -278,291 +258,98 @@ class XHProfData
 	
 	public function getHosts(array $query = NULL)
 	{
-		$data		= array();
+		$this->aggregateRequestData($query, array('datetime_from', 'datetime_to', 'host', 'host_id'));
+	
+		$data				= array();
 		
-		$sql_query		= $this->buildQuery($query, array('datetime_from', 'datetime_to', 'host', 'host_id'));
-		
-		// matching filter		
-		$sth		= $this->db->prepare("
+		$data['discrete']	= $this->db->query("
 			SELECT
-				`rh1`.`id` `host_id`,
-				`rh1`.`host`,
-				COUNT(`r1`.`id`) `request_count`,
-				AVG(`c1`.`wt`) `wt`,
-				AVG(`c1`.`cpu`) `cpu`,
-				AVG(`c1`.`mu`) `mu`,
-				AVG(`c1`.`pmu`) `pmu`
+				`host_id`,
+				`host`,
+				
+				COUNT(`request_id`) `request_count`,
+				
+				AVG(`wt`) `wt`,
+				AVG(`cpu`) `cpu`,
+				AVG(`mu`) `mu`,
+				AVG(`pmu`) `pmu`
 			FROM
-				`calls` `c1`
-			INNER JOIN
-				`requests` `r1`
-			ON
-				`r1`.`request_caller_id` = `c1`.`id`
-			INNER JOIN
-				`request_hosts` `rh1`
-			ON
-				`rh1`.`id` = `r1`.`request_host_id`
-			WHERE
-				1=1 {$sql_query['where']}
+				`temporary_request_data`
 			GROUP BY
-				`r1`.`request_host_id`
+				`host_id`
 			ORDER BY
-				`rh1`.`host`;
-		");
+				`host`;
+		")->fetchAll(PDO::FETCH_ASSOC);
 		
-		$sth->execute($query);
-		
-		$data['discrete']	= $sth->fetchAll(PDO::FETCH_ASSOC);
-		
-		if(!empty($data['discrete']))
-		{
-			// overall
-			$sth		= $this->db->prepare("
-			SELECT
-				COUNT(`r1`.`id`) `request_count`,
-				AVG(`c1`.`wt`) `wt`,
-				AVG(`c1`.`cpu`) `cpu`,
-				AVG(`c1`.`mu`) `mu`,
-				AVG(`c1`.`pmu`) `pmu`
-			FROM
-				`calls` `c1`
-			INNER JOIN
-				`requests` `r1`
-			ON
-				`r1`.`request_caller_id` = `c1`.`id`
-			INNER JOIN
-				`request_hosts` `rh1`
-			ON
-				`rh1`.`id` = `r1`.`request_host_id`
-			WHERE
-				1=1 {$sql_query['where']};
-			");
-			
-			$sth->execute($query);
-			
-			$data['aggregated']	= $sth->fetch(PDO::FETCH_ASSOC);
-		}
+		$data['aggregated']	= $this->getAggregatedMetrics();
 		
 		return $data;
 	}
 	
 	public function getUris(array $query = NULL)
 	{
-		$data		= array();
+		$this->aggregateRequestData($query);
 	
-		$sql_query	= $this->buildQuery($query);
+		$data				= array();
 		
-		$sth		= $this->db->prepare("
-		
+		$data['discrete']	= $this->db->query("
 			SELECT
-				`rh1`.`id` `host_id`,
-				`rh1`.`host`,
-				`ru1`.`id` `uri_id`,
-				`ru1`.`uri`,
+				`host_id`,
+				`host`,
+				`uri_id`,
+				`uri`,
 				
-				COUNT(`c1`.`id`) `request_count`,
+				COUNT(`request_id`) `request_count`,
 				
-				AVG(`c1`.`wt`) `wt`,
-				AVG(`c1`.`cpu`) `cpu`,
-				AVG(`c1`.`mu`) `mu`,
-				AVG(`c1`.`pmu`) `pmu`
+				AVG(`wt`) `wt`,
+				AVG(`cpu`) `cpu`,
+				AVG(`mu`) `mu`,
+				AVG(`pmu`) `pmu`
 			FROM
-				`requests` `r1`
-			INNER JOIN
-				`calls` `c1`
-			ON 
-				`c1`.`id` = `r1`.`request_caller_id`
-			INNER JOIN
-				`request_uris` `ru1`
-			ON
-				`ru1`.`id` = `r1`.`request_uri_id`
-			
-			INNER JOIN
-				`request_hosts` `rh1`
-			ON
-				`rh1`.`id` = `r1`.`request_host_id`
-			
-			WHERE
-				1=1 {$sql_query['where']}
+				`temporary_request_data`
 			GROUP BY
-				`r1`.`request_uri_id`
+				`uri_id`
 			ORDER BY
-				NULL;
-		");
+				`host`;
+		")->fetchAll(PDO::FETCH_ASSOC);
 		
-		$sth->execute($query);
-		
-		$data['discrete']	= $sth->fetchAll(PDO::FETCH_ASSOC);
-		
-		if(!empty($data['discrete']))
-		{
-			// overall
-			$sth		= $this->db->prepare("
-			SELECT
-				COUNT(`c1`.`id`) `request_count`,
-				AVG(`c1`.`wt`) `wt`,
-				AVG(`c1`.`cpu`) `cpu`,
-				AVG(`c1`.`mu`) `mu`,
-				AVG(`c1`.`pmu`) `pmu`
-			FROM
-				`request_uris` `ru1`
-			INNER JOIN
-				`requests` `r1`
-			ON
-				`r1`.`request_uri_id` = `ru1`.`id`
-			INNER JOIN
-				`calls` `c1`
-			ON 
-				`c1`.`id` = `r1`.`request_caller_id`
-			INNER JOIN
-				`request_hosts` `rh1`
-			ON
-				`rh1`.`id` = `r1`.`request_host_id`
-			WHERE
-				1=1 {$sql_query['where']};
-			");
-			
-			$sth->execute($query);
-			
-			$data['aggregated']	= $sth->fetch(PDO::FETCH_ASSOC);
-		}
+		$data['aggregated']	= $this->getAggregatedMetrics();
 		
 		return $data;
 	}
 	
-	public function getRequests($query)
+	public function getRequests(array $query = NULL)
 	{
-		$data		= array();
+		$this->aggregateRequestData($query);
 	
-		$sql_query	= $this->buildQuery($query);
+		$data				= array();		
 		
-		$sth		= $this->db->prepare("
-			SELECT
-				`r1`.`id` `request_id`,
-				
-				`rh1`.`id` `host_id`,
-				`rh1`.`host`,
-				
-				`ru1`.`id` `uri_id`,
-				`ru1`.`uri`,
-				
-				`rm1`.`method` `request_method`,
-				
-				`c1`.`wt`,
-				`c1`.`cpu`,
-				`c1`.`mu`,
-				`c1`.`pmu`,
-				
-				UNIX_TIMESTAMP(`r1`.`request_timestamp`) `request_timestamp`
-			FROM
-				`requests` `r1`
-			INNER JOIN
-				`request_uris` `ru1`
-			ON
-				`ru1`.`id` = `r1`.`request_uri_id`
-			INNER JOIN
-				`request_methods` `rm1`
-			ON
-				`rm1`.`id` = `r1`.`request_method_id`
-			INNER JOIN
-				`request_hosts` `rh1`
-			ON
-				`rh1`.`id` = `r1`.`request_host_id`
-			INNER JOIN
-				`calls` `c1`
-			ON 
-				`c1`.`id` = `r1`.`request_caller_id`
-			WHERE
-				1=1 {$sql_query['where']}
-			ORDER BY
-				`r1`.`request_timestamp` DESC
-			LIMIT 100;
-		");
+		$data['discrete']	= $this->db->query("SELECT * FROM `temporary_request_data`;")->fetchAll(PDO::FETCH_ASSOC);
 		
-		$sth->execute($query);
-		
-		$data['discrete']	= $sth->fetchAll(PDO::FETCH_ASSOC);
-		
-		if(!empty($data['discrete']))
-		{
-			// overall
-			$sth		= $this->db->prepare("
-			SELECT
-				COUNT(`c1`.`id`) `request_count`,
-				AVG(`c1`.`wt`) `wt`,
-				AVG(`c1`.`cpu`) `cpu`,
-				AVG(`c1`.`mu`) `mu`,
-				AVG(`c1`.`pmu`) `pmu`
-			FROM
-				`request_uris` `ru1`
-			INNER JOIN
-				`requests` `r1`
-			ON
-				`r1`.`request_uri_id` = `ru1`.`id`
-			INNER JOIN
-				`request_methods` `rm1`
-			ON
-				`rm1`.`id` = `r1`.`request_method_id`
-			INNER JOIN
-				`request_hosts` `rh1`
-			ON
-				`rh1`.`id` = `r1`.`request_host_id`
-			INNER JOIN
-				`calls` `c1`
-			ON 
-				`c1`.`id` = `r1`.`request_caller_id`
-			WHERE
-				1=1 {$sql_query['where']};
-			");
-			
-			$sth->execute($query);
-			
-			$data['aggregated']	= $sth->fetch(PDO::FETCH_ASSOC);
-		}
+		$data['aggregated']	= $this->getAggregatedMetrics();
 		
 		return $data;
 	}
 	
-	public function getAggregatedMetrics($query)
+	private function getAggregatedMetrics()
 	{
-		#ay('test');
+		return $this->db->query("
+			SELECT
+				COUNT(`request_id`) `request_count`,
+				AVG(`wt`) `wt`,
+				AVG(`cpu`) `cpu`,
+				AVG(`mu`) `mu`,
+				AVG(`pmu`) `pmu`
+			FROM
+				`temporary_request_data`;
+		")->fetch(PDO::FETCH_ASSOC);
+	}
 	
-		$sql_query	= $this->buildQuery($query);
-		
-		$this->db
-			->prepare("
-			CREATE TEMPORARY TABLE `temporary_grouped_data` ENGINE=MEMORY AS
-			(
-				SELECT
-					`r1`.`id`,
-					`c1`.`wt`,
-					`c1`.`cpu`,
-					`c1`.`mu`,
-					`c1`.`pmu`
-				FROM
-					`requests` `r1`
-				INNER JOIN
-					`request_hosts` `rh1`
-				ON
-					`rh1`.`id` = `r1`.`request_host_id`
-				INNER JOIN
-					`request_uris` `ru1`
-				ON
-					`ru1`.`id` = `r1`.`request_uri_id`
-				INNER JOIN
-					`calls` `c1`
-				ON
-					`c1`.`id` = `r1`.`request_caller_id`
-				WHERE
-					1=1 {$sql_query['where']}
-			);")
-			->execute($query);
-			
-			
-	
+	public function getMetricsSummary()
+	{
 		$data	= $this->db->query("
 			SELECT
-				COUNT(`id`),
+				COUNT(`request_id`),
 				
 				MIN(`wt`),
 				MAX(`wt`),
@@ -580,13 +367,13 @@ class XHProfData
 				MAX(`pmu`),
 				AVG(`pmu`)
 			FROM
-				`temporary_grouped_data`;
+				`temporary_request_data`;
 		")
 			->fetch(PDO::FETCH_NUM);
 		
 		if(!$data)
 		{
-			return FALSE;
+			throw new XHProfException('Cannot aggregate non-existing metrics.');
 		}
 			
 		$return	= array
@@ -606,43 +393,27 @@ class XHProfData
 		foreach(array('wt', 'cpu', 'mu', 'pmu') as $column)
 		{
 			// I've excluded median on purpose, because it is relatively costly calculation, arguably of any value.
-			$return[$column]['95th']	= $this->db->query("SELECT `{$column}` FROM `temporary_grouped_data` ORDER BY `{$column}` ASC LIMIT {$percentile_offset}, 1;")->fetch(PDO::FETCH_COLUMN);
-			$return[$column]['mode']	= $this->db->query("SELECT `{$column}` FROM `temporary_grouped_data` GROUP BY `{$column}` ORDER BY COUNT(`{$column}`) DESC LIMIT 1;")->fetch(PDO::FETCH_COLUMN);
+			$return[$column]['95th']	= $this->db->query("SELECT `{$column}` FROM `temporary_request_data` ORDER BY `{$column}` ASC LIMIT {$percentile_offset}, 1;")->fetch(PDO::FETCH_COLUMN);
+			$return[$column]['mode']	= $this->db->query("SELECT `{$column}` FROM `temporary_request_data` GROUP BY `{$column}` ORDER BY COUNT(`{$column}`) DESC LIMIT 1;")->fetch(PDO::FETCH_COLUMN);
 		}
-		
-		/*$union_sql	= [];
-		
-		foreach(array('wt', 'cpu', 'mu', 'pmu') as $column)
-		{
-		
-			// I've excluded median on purpose, because it is relatively costly calculation, arguably of any value.
-			$union_sql[]	= "(SELECT `{$column}` FROM `temporary_grouped_data` ORDER BY `{$column}` ASC LIMIT {$percentile_offset}, 1)";
-			$union_sql[]	= "(SELECT `{$column}` FROM `temporary_grouped_data` GROUP BY `{$column}` ORDER BY COUNT(`{$column}`) DESC LIMIT 1)";
-		}
-		
-		$union_sql	= implode(PHP_EOL . 'UNION' . PHP_EOL, $union_sql);
-		
-		#$data	= $this->db->query($union_sql)->fetchAll(PDO::FETCH_ASSOC);
-		
-		ay($union_sql);
-		
-		//$return[$column]['mode']	= $this->db->query("SELECT `{$column}` FROM `temporary_grouped_data` GROUP BY `{$column}` ORDER BY COUNT(`{$column}`) DESC LIMIT 1;")->fetch(PDO::FETCH_COLUMN);*/
 		
 		return $return;
 	}
 	
-	private function buildQuery(array $query = NULL, $whitelist = array('datetime_from', 'datetime_to', 'host', 'host_id', 'uri', 'uri_id', 'request_id'))
+	private function buildQuery(array $query = NULL, array $whitelist = array('datetime_from', 'datetime_to', 'host', 'host_id', 'uri', 'uri_id', 'request_id'))
 	{
 		$return		= array
 		(
-			'where'	=> ''
+			'where'			=> ''
 		);
 		
 		if($query === NULL)
 		{
 			return $return;
 		}
-	
+		
+		$whitelist	= array_merge($whitelist, array('dataset_size'));
+		
 		if(count(array_diff_key($query, array_flip($whitelist))))
 		{
 			throw new XHProfException('Not supported filter parameters cannot be present in the query.');
@@ -691,6 +462,68 @@ class XHProfData
 		}
 		
 		return $return;
+	}
+	
+	/**
+	 * This method creates a temporary table (ENGINE=InnoDB|MEMORY). The table is populated
+	 * with the data necessary to analyze requests matching the query.
+	 * 
+	 * @param	array	$query User-input used to generate the query WHERE and LIMIT clause.
+	 * @param	array	$whitelist	Is required whenever any of the filters (currently, self::getHosts only) does not support either of the standard $query parameters.
+	 */
+	private function aggregateRequestData($query, array $whitelist = array())
+	{
+		$query['dataset_size']	= empty($query['dataset_size']) ? 1000 : intval($query['dataset_size']);
+		
+		$sql_query				= $this->buildQuery($query, $whitelist);
+		
+		$sth					= $this->db->prepare("
+		CREATE TEMPORARY TABLE `temporary_request_data` ENGINE=InnoDB AS
+		(
+			SELECT
+				`r1`.`id` `request_id`,
+				
+				`rh1`.`id` `host_id`,
+				`rh1`.`host`,
+				
+				`ru1`.`id` `uri_id`,
+				`ru1`.`uri`,
+				
+				`rm1`.`method` `request_method`,
+				
+				`c1`.`wt`,
+				`c1`.`cpu`,
+				`c1`.`mu`,
+				`c1`.`pmu`,
+				
+				UNIX_TIMESTAMP(`r1`.`request_timestamp`) `request_timestamp`
+			FROM
+				`requests` `r1`
+			INNER JOIN
+				`request_uris` `ru1`
+			ON
+				`ru1`.`id` = `r1`.`request_uri_id`
+			INNER JOIN
+				`request_methods` `rm1`
+			ON
+				`rm1`.`id` = `r1`.`request_method_id`
+			INNER JOIN
+				`request_hosts` `rh1`
+			ON
+				`rh1`.`id` = `r1`.`request_host_id`
+			INNER JOIN
+				`calls` `c1`
+			ON 
+				`c1`.`id` = `r1`.`request_caller_id`
+			WHERE
+				1=1 {$sql_query['where']}
+			ORDER BY
+				`r1`.`request_timestamp` DESC
+			LIMIT :dataset_size
+		);
+		");
+		
+		$sth->execute($query);
 	}
 }
 
@@ -832,10 +665,10 @@ class XHProf
 		return $groups;
 	}
 	
+	private $groups	= array();
+	
 	public function getGroup($e)
 	{
-		static $groups	= array();
-		
 		if(empty($e['caller']))
 		{
 			return;
@@ -857,20 +690,16 @@ class XHProf
 			$group	= count($group) === 1 ? 'user-defined function' : $group[0];
 		}
 		
-		if(isset($groups[$group]))
+		if(!isset($this->groups[$group]))
 		{
-			return $groups[$group];
-		}
-		else
-		{
-			$groups[$group]	= array
+			$this->groups[$group]	= array
 			(
-				'index'	=> count($groups)+1,
+				'index'	=> count($this->groups)+1,
 				'name'	=> $group
 			);
-			
-			return end($groups);
 		}
+		
+		return $this->groups[$group];
 	}
 }
 

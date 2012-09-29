@@ -18,34 +18,38 @@ if(empty($data['discrete']))
 
 $data['aggregated']	= xhprof_format_metrics($data['aggregated']);
 
-
 require __DIR__ . '/summary.inc.tpl.php';
+
+require __DIR__ . '/histogram.inc.tpl.php';
+
 ?>
 <div class="table-wrapper">
 	<table class="requests ay-sort">
 		<thead class="ay-sticky">
 			<tr>
+				<th class="ay-sort request-id" rowspan="2">Request ID</th>
 				<th class="ay-sort host" rowspan="2">Host</th>
-				<th class="ay-sort" rowspan="2" data-ay-sort-index="1">URI</th>
+				<th class="ay-sort" rowspan="2">URI</th>
 				<th class="ay-sort request-method" rowspan="2">Request Method</th>
 				<th class="heading" colspan="4">Metrics</th>
-				<th class="ay-sort ay-sort-desc date-time" rowspan="2" data-ay-sort-index="6">Request Time</th>
+				<th class="ay-sort ay-sort-desc date-time" rowspan="2" data-ay-sort-index="8">Request Time</th>
 			</tr>
 			<tr>
 				
-				<th class="ay-sort" data-ay-sort-index="3">Wall Time</th>
-				<th class="ay-sort" data-ay-sort-index="4">CPU</th>
-				<th class="ay-sort" data-ay-sort-index="5">Memory Usage</th>
-				<th class="ay-sort" data-ay-sort-index="6">Peak Memory Usage</th>
+				<th class="ay-sort" data-ay-sort-index="4">Wall Time</th>
+				<th class="ay-sort" data-ay-sort-index="5">CPU</th>
+				<th class="ay-sort" data-ay-sort-index="6">Memory Usage</th>
+				<th class="ay-sort" data-ay-sort-index="7">Peak Memory Usage</th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php foreach($data['discrete'] as $e):
 				$e	= xhprof_format_metrics($e);			
 			?>
-			<tr>
+			<tr data-request-id="<?=$e['request_id']?>">
+				<td><a href="<?=xhprof_url('request', array('request_id' => $e['request_id']))?>"><?=$e['request_id']?></a></td>
 				<td><a href="<?=xhprof_url('uris', array('host_id' => $e['host_id']))?>"><?=htmlspecialchars($e['host'])?></a></td>
-				<td><a href="<?=xhprof_url('request', array('request_id' => $e['request_id']))?>"><?=htmlspecialchars($e['uri'])?></a></td>
+				<td><a href="<?=xhprof_url('uris', array('host_id' => $e['host_id'], 'uri_id' => $e['uri_id']))?>"><?=htmlspecialchars($e['uri'])?></a></td>
 				<td><?=$e['request_method']?></td>
 				<td class="metrics" data-ay-sort-weight="<?=$e['wt']['raw']?>"><?=$e['wt']['formatted']?></td>
 				<td class="metrics" data-ay-sort-weight="<?=$e['cpu']['raw']?>"><?=$e['cpu']['formatted']?></td>
@@ -57,7 +61,7 @@ require __DIR__ . '/summary.inc.tpl.php';
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="3"></td>
+				<td colspan="4"></td>
 				<td class="metrics"><?=$data['aggregated']['wt']['formatted']?></td>
 				<td class="metrics"><?=$data['aggregated']['cpu']['formatted']?></td>
 				<td class="metrics"><?=$data['aggregated']['mu']['formatted']?></td>

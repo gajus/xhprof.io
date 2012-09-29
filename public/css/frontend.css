@@ -97,6 +97,108 @@ body > .footer {
 .multidimensional-filter g.axis {
   pointer-events: none;
 }
+.histogram-layout {
+  margin: 20px;
+  overflow: hidden;
+  background: #f00;
+  border-left: 1px solid #E3E3E3;
+  border-top: 1px solid #E3E3E3;
+}
+.histogram-layout > .left,
+.histogram-layout > .right,
+.histogram-layout > .center {
+  height: 500px;
+  background: #00F;
+}
+.histogram-layout > .left {
+  float: left;
+  width: 40%;
+}
+.histogram-layout > .right {
+  float: right;
+  width: 30%;
+}
+.histogram-layout > .center {
+  float: left;
+  width: 30%;
+}
+.histogram-layout > .left .column {
+  height: 500px;
+}
+.histogram-layout > .right .column,
+.histogram-layout > .center .column {
+  height: 250px;
+}
+.histogram-layout .column {
+  background: #eee;
+  padding: 10px;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border: 1px solid #E3E3E3;
+  border-top: none;
+  border-left: none;
+  background: #F3F3F3;
+  position: relative;
+  font: 12px/20px monospace;
+  color: #666;
+}
+.histogram-layout .column .label {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+}
+.histogram-layout .column svg {
+  float: left;
+  height: 100%;
+  position: relative;
+  z-index: 3;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.histogram-layout .column g.background rect,
+.histogram-layout .column g.foreground rect {
+  fill: #4581b3;
+  stroke: none;
+  shape-rendering: crispEdges;
+}
+.histogram-layout .column g.foreground rect {
+  fill: #ccc;
+}
+.histogram-layout .column g.axis line,
+.histogram-layout .column g.axis path {
+  fill: none;
+  stroke: #000;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+.histogram-layout .column g.brush rect.extent {
+  fill: steelblue;
+  fill-opacity: .125;
+}
+.histogram-layout .column g.brush .resize path {
+  fill: #eee;
+  stroke: #666;
+}
+.histogram-layout .column .delays,
+.histogram-layout .column .distances {
+  margin-left: 20px;
+}
+.histogram-layout .column .clippath-graph-dates rect {
+  fill: #f00;
+}
+.histogram-layout .column rect.scrollbar {
+  fill: #fefefe;
+  stroke: #666;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+.histogram-layout .column g.axis {
+  pointer-events: none;
+}
 mark,
 code {
   background: #eee;
@@ -252,6 +354,9 @@ table.metrics-summary tbody tr.current th {
 table.requests th.host,
 table.uris th.host {
   width: 200px;
+}
+table.requests th.request-id {
+  width: 100px;
 }
 table.requests th.request-method {
   width: 100px;

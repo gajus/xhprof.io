@@ -51,6 +51,64 @@ body
 	g.axis { pointer-events: none; }
 }
 
+.histogram-layout
+{
+	margin: 20px; overflow: hidden; background: #f00; border-left: 1px solid #E3E3E3; border-top: 1px solid #E3E3E3;
+	
+	> .left,
+	> .right,
+	> .center { height: 500px; background: #00F; }
+	
+	> .left { float: left; width: 40%; }
+	> .right { float: right; width: 30%; }
+	> .center {  float: left;	 width: 30%; }
+	
+	> .left
+	{
+		.column { height: 500px; }
+	}
+	
+	> .right,
+	> .center
+	{
+		.column { height: 250px; }
+	}
+	
+	.column
+	{
+		background: #eee; padding: 10px; -moz-box-sizing: border-box; box-sizing: border-box; border: 1px solid #E3E3E3; border-top: none; border-left: none; background: #F3F3F3; position: relative; font: 12px/20px monospace; color: #666;
+		
+		.label { position: absolute; right: 20px; top: 10px; }
+	
+		svg
+		{
+			float: left; height: 100%; position: relative; z-index: 3;
+		
+			-webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; 
+		}
+		
+		g.background rect,
+		g.foreground rect { fill: #4581b3; stroke: none; shape-rendering: crispEdges; }
+		
+		g.foreground rect { fill: #ccc; }
+		
+		g.axis line,
+		g.axis path { fill: none; stroke: #000; stroke-width: 1px; shape-rendering: crispEdges; }
+		
+		g.brush rect.extent { fill: steelblue; fill-opacity: .125; }
+		
+		g.brush .resize path { fill: #eee; stroke: #666; }
+		
+		.delays,
+		.distances { margin-left: 20px; }
+		
+		.clippath-graph-dates rect { fill: #f00; }
+		
+		rect.scrollbar { fill: #fefefe; stroke: #666; stroke-width: 1px; shape-rendering: crispEdges; }
+		g.axis { pointer-events: none; }
+	}
+}
+
 mark,
 code { background: #eee; color: #000; padding: 2px 4px; font-family: monospace; }
 
@@ -178,6 +236,7 @@ table
 	
 	&.requests
 	{
+		th.request-id { width: 100px; }
 		th.request-method { width: 100px; }
 	}
 	
@@ -246,6 +305,8 @@ table
 		span.value { }
 		span.measure {  width: 20px; text-align: right; float: right; color: #666; }
 	}
+	
+	
 }
 
 .ay-message-placeholder

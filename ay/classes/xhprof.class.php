@@ -400,8 +400,13 @@ class XHProfData
 		return $return;
 	}
 	
-	private function buildQuery(array $query = NULL, array $whitelist = array('datetime_from', 'datetime_to', 'host', 'host_id', 'uri', 'uri_id', 'request_id'))
+	private function buildQuery(array $query = NULL, array $whitelist = array())
 	{
+		if(empty($whitelist))
+		{
+			$whitelist	= array('datetime_from', 'datetime_to', 'host', 'host_id', 'uri', 'uri_id', 'request_id');
+		}
+	
 		$return		= array
 		(
 			'where'			=> ''

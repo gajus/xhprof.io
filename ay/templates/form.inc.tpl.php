@@ -23,6 +23,10 @@
 		<div class="column">
 			<?=ay_input('query[dataset_size]', 'Dataset Size', NULL, array('comment' => 'Integer number that defines the maximum number of the most recent requests to aggregate that match the query. Defaults to <mark>1,000</mark>.'))?>
 		</div>
+		<?php /*
+		<div class="column">
+			<?=ay_input('query[request_ids]', 'Request IDs', NULL, array('comment' => 'Request ID or a comma-separated list of request IDs to analyze.'))?>
+		</div>*/ ?>
 	</div>
 	
 	<div class="buttons">

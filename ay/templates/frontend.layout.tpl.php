@@ -8,8 +8,9 @@
 	<script type="text/javascript" src="public/js/jquery.ay-table-sort.js"></script>
 	<script type="text/javascript" src="public/js/jquery.ay-table-sticky.js"></script>
 	
-	<!--<script type="text/javascript" src="public/js/d3.v2.min.js"></script>
-	<script type="text/javascript" src="public/js/crossfilter.v1.min.js"></script>-->
+	<script type="text/javascript" src="public/js/d3.v2.js"></script>
+	<script type="text/javascript" src="public/js/crossfilter.v1.js"></script>
+	<script type="text/javascript" src="public/js/d3.crossfilter.ay-histogram.js"></script>
 	
 	<script type="text/javascript" src="public/js/frontend.js"></script>
 	

@@ -1,5 +1,5 @@
 /**
- * jQuery table-sticky v0.0.1
+ * jQuery table-sticky v0.0.2
  * https://github.com/anuary/jquery-table-sticky
  *
  * Licensed under the BSD.
@@ -11,11 +11,8 @@
 	$.fn.ayTableSticky	= function(){
 		this.each(function(){
 			var thead			= $(this);
-			//var table			= thead.parent();
 			
 			var thead_offset	= thead.offset().top;
-			
-			//var table_width		= 
 			
 			var present;
 			var clone;
@@ -33,7 +30,7 @@
 					{
 						clone.remove();
 						
-						thead.css({position: 'relative'});
+						thead.css({position: 'relative'}).removeClass('ay-position-fixed');
 						
 						present	= false;
 					}
@@ -52,7 +49,7 @@
 							});
 						}).trigger('resize');
 						
-						thead.css({position: 'fixed', top: 0});
+						thead.css({position: 'fixed', top: 0}).addClass('ay-position-fixed');
 						
 						present	= true;
 					}

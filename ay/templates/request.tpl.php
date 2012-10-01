@@ -4,39 +4,30 @@ if(empty($_GET['xhprof']['query']['request_id']))
 	throw new XHProfException('Request data can be accessed only through the ID.');
 }
 
-$request	= $xhprof_data_obj->get($_GET['xhprof']['query']['request_id']);
+$request			= $xhprof_data_obj->get($_GET['xhprof']['query']['request_id']);
 
 if(!$request)
 {
 	ay_redirect(AY_REDIRECT_REFERRER, 'Request data not found.');
 }
 
-$xhprof_obj	= new XHProf($request);
+$xhprof_obj			= new XHProf($request);
 
-/*
-<?php /*if(!empty($request['environment'])):?>
-<div class="table-wrapper">
-	<table class="environment">
-		<thead>
-			<tr>
-				<th class="name">Name</th>
-				<th>Value</th>
-			</tr>
-		</thead>
-		<tbody></tbody>
-	</table>
-</div>
-<script type="text/javascript">
-	$(function(){
-		$('table.environment').ayJsonToTable(<?=json_encode($request['environment'])?>);
-	});
-</script>
-<?php endif;*/?>
+if(!empty($_GET['xhprof']['callgraph']))
+{
+	$xhprof_callgraph	= new XHProfCallgraph;
 
-<?php
+
+	$callstack			= $xhprof_obj->assignUID($request['callstack']);
+	
+	
+	$dot_script			= $xhprof_callgraph->dot($callstack);
+	
+	$xhprof_callgraph->graph($dot_script);
+}
+
 $aggregated_stack	= $xhprof_obj->getAggregatedStack();
 
-#ay( $xhprof_obj->groupStack($aggregated_stack) );
 ?>
 <div class="table-wrapper">
 	<table class="aggregated-callstack ay-sort">

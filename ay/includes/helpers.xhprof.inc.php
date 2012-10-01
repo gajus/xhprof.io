@@ -113,7 +113,7 @@ function xhprof_format_number($number)
 	return $value;
 }
 
-function xhprof_format_bytes($size, $precision = 2)
+function xhprof_format_bytes($size, $precision = 2, $format = TRUE)
 {
 	if($size == 0)
 	{
@@ -121,12 +121,15 @@ function xhprof_format_bytes($size, $precision = 2)
 	}
 	
     $base		= log(abs($size)) / log(1024);
-    $suffixes	= array('b', 'k', 'M', 'G', 'T');   
+    $suffixes	= array('b', 'k', 'M', 'G', 'T');
+    
+    $number		= round(pow(1024, $base - floor($base)), $precision);
+    $suffix		= $suffixes[floor($base)];
 
-    return '<span class="value">' . round(pow(1024, $base - floor($base)), $precision) . '</span> <span class="measure">' . $suffixes[floor($base)] . '</span>';
+    return $format ? '<span class="value">' . $number . '</span> <span class="measure">' . $suffix . '</span>' : $number . ' ' . $suffix;
 }
 
-function xhprof_format_microseconds($time)
+function xhprof_format_microseconds($time, $format = TRUE)
 {
 	$time	= (int) $time;
 
@@ -153,7 +156,12 @@ function xhprof_format_microseconds($time)
 		}
 	}
 	
-	return $pad ? sprintf('<span class="value">%.4f</span> <span class="measure">' . $suffix . '</span>', $time) : '<span class="value">' . $time . '</span> <span class="measure">' . $suffix . '</span>';
+	if($pad)
+	{
+		$time	= sprintf('%.4f', $time);
+	}
+	
+	return $format ? '<span class="value">' . $time . '</span> <span class="measure">' . $suffix . '</span>' : $time . ' ' . $suffix;
 }
 
 function xhprof_recursive_unset(&$array, $blacklist)

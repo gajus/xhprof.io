@@ -5,7 +5,12 @@ define('XHPROF_VERSION', '0.1.0');
 
 if(isset($_GET['ay']['debug']))
 {
-	$_SESSION['ay']['debug']	= !empty($_GET['ay']['debug']);
+	$_SESSION['ay']['debug']		= !empty($_GET['ay']['debug']);
+}
+
+if(isset($_GET['ay']['profiling']))
+{
+	$_SESSION['ay']['profiling']	= !empty($_GET['ay']['profiling']);
 }
 
 // These constants are required to maintain
@@ -53,7 +58,7 @@ class AyException extends Exception {}
 
 set_exception_handler('ay_error_exception_handler');
 
-if(AY_DEBUG)
+if(AY_DEBUG && !empty($_SESSION['ay']['profiling']))
 {
 	$config['pdo']->exec("SET `profiling` = 1;");
 	// keep track of as many as possible queries (the maximum value is 100)

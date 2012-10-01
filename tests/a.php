@@ -1,13 +1,27 @@
 <?php
-#require __DIR__ . '/../../temp6/external/header.php';
-
-$test	= [];
-
-$size	= 1*1000*1000;
-
-for($i = 0; $i < $size; $i++)
+function a()
 {
-	$test[]	= mt_rand(0,100000);
+	b();
 }
 
-echo array_sum($test)/$size;
+function b()
+{
+	c();
+	d();
+}
+
+function c()
+{
+	for($i = 0; $i < 10; $i++)
+	{
+		d();
+	}
+}
+
+function d()
+{
+	
+}
+
+a();
+d();

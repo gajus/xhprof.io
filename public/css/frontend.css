@@ -23,6 +23,11 @@ body > .navigation a:hover {
 body > .navigation a.active {
   background: #6090dd;
 }
+body > .navigation a.callgraph {
+  background: #fff;
+  color: #111;
+  padding: 0 20px;
+}
 body > .filters {
   background: #ffffd6;
   border: 1px solid #d8aa00;

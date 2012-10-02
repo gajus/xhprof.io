@@ -1,18 +1,21 @@
 <?php
-function xhprof_url($template = NULL, array $xhprof_query = NULL, array $ay_query = array())
+function xhprof_url($template = NULL, array $xhprof_query = NULL, array $xhprof = array())
 {
 	if($template === NULL)
 	{
 		return AY_URL_FRONTEND;
 	}
 	
-	$query					= array();
+	$query	= array
+	(
+		'xhprof'	=> $xhprof
+	);
 	
-	$query['ay']			= array('template' => $template) + $ay_query;
+	$query['xhprof']['template']	= $template;
 	
 	if($xhprof_query)
 	{
-		$query['xhprof']	= array('query' => $xhprof_query);
+		$query['xhprof']['query']	= $xhprof_query;
 	}
 	
 	return AY_URL_FRONTEND . '?' . str_replace(array('%5B', '%5D'), array('[', ']'), http_build_query($query));

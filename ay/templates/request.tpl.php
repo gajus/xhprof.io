@@ -26,7 +26,7 @@ if(!empty($_GET['xhprof']['callgraph']))
 
 $aggregated_stack	= $xhprof_obj->getAggregatedStack();
 
-if(!empty($_GET['xhprof']['query']['second_request_id']))
+if(isset($_GET['xhprof']['query']['second_request_id']))
 {
 	$second_request				= $xhprof_data_obj->get($_GET['xhprof']['query']['second_request_id']);
 
@@ -38,12 +38,17 @@ if(!empty($_GET['xhprof']['query']['second_request_id']))
 	{
 		ay_redirect(AY_REDIRECT_REFERRER, 'Cannot compare the two requests. The callstack does not match.');
 	}
+	else if($request == $second_request)
+	{
+		ay_redirect(AY_REDIRECT_REFERRER, 'Cannot compare the request to itself.');
+	}
 	
 	$second_xhprof_obj			= new XHProf($second_request);
 	
 	$second_aggregated_stack	= $second_xhprof_obj->getAggregatedStack();
 }
 
+require __DIR__ . '/form.inc.tpl.php';
 
 $fn_metrics_column	= function($parameter, $group)
 {

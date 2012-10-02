@@ -9,6 +9,8 @@ if(!ay_error_present())
 	}
 }
 
+
+
 require __DIR__ . '/form.inc.tpl.php';
 
 if(empty($data['discrete']))
@@ -21,7 +23,6 @@ $data['aggregated']	= xhprof_format_metrics($data['aggregated']);
 require __DIR__ . '/summary.inc.tpl.php';
 
 require __DIR__ . '/histogram.inc.tpl.php';
-
 ?>
 <div class="table-wrapper">
 	<table class="requests ay-sort">

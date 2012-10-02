@@ -10,6 +10,10 @@ $navigation	= array
 <?php foreach($navigation as $e):?>
 	<a href="<?=$e['url']?>"<?php if(!empty($e['class'])):?> class="<?=$e['class']?>"<?php endif;?>><?=$e['name']?></a>
 <?php endforeach;?>
+
+<?php if($template['file'] == 'request' && empty($_GET['xhprof']['query']['second_request_id'])):?>
+	<a href="<?=xhprof_url('request', array('request_id' => $request['id']), array('callgraph' => 1))?>" class="callgraph" target="_blank">Callgraph</a>
+<?php endif;?>
 </div>
 <?php
 unset($navigation);

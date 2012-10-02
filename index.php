@@ -13,26 +13,57 @@ $template			= array
 
 $templates			= array('requests', 'request', 'uris', 'hosts', 'function');
 
-if(empty($_GET['ay']['template']))
+if(empty($_GET['xhprof']['template']))
 {
-	$_GET['ay']['template']	= 'hosts';
+	$_GET['xhprof']['template']	= 'hosts';
 }
 
-if(!in_array($_GET['ay']['template'], $templates))
+if(!in_array($_GET['xhprof']['template'], $templates))
 {
 	throw new Exception('Invalid template.');
 }
 
-$template['file']	= $_GET['ay']['template'];
+$template['file']	= $_GET['xhprof']['template'];
 
 // This additional step is taken to make URLs pretty. I am aware that [] should be urlencoded. However,
 // that makes the URLs unreadable. It is handly to be able to emmend parameters directly in the URL query.
 // Furthermore, this strips out empty parameters.
 if(!empty($_POST['ay']['query']))
 {
+	$template	= $template['file'];
+	
 	$query		= array_filter($_POST['ay']['query']);
 	
-	ay_redirect(xhprof_url($template['file'], $query));
+	if(isset($query['request_ids']))
+	{
+		$template		= 'request';
+		$ids			= explode(',', $query['request_ids']);
+		
+		
+		if(count($ids) == 1)
+		{
+			$query['request_id']		= $ids[0];
+			
+			unset($query['request_ids']);
+		}
+		else if(count($ids) == 2)
+		{
+			$query['request_id']		= $ids[0];
+			$query['second_request_id']	= $ids[1];
+			
+			unset($query['request_ids']);
+		}
+		else
+		{
+			ay_redirect(AY_REDIRECT_REFERRER, 'Sorry, this feature is currently not implemented.');
+		
+			$template	= 'requests';
+		}
+		
+		unset($ids);
+	}
+	
+	ay_redirect(xhprof_url($template, $query));
 }
 
 // $_GET['xhprof']['query'] is used throughout the code to filter data. NULL value will be ignored.

@@ -16,10 +16,8 @@ $xhprof_obj			= new XHProf($request);
 if(!empty($_GET['xhprof']['callgraph']))
 {
 	$xhprof_callgraph	= new XHProfCallgraph;
-
-
-	$callstack			= $xhprof_obj->assignUID($request['callstack']);
 	
+	$callstack	= $xhprof_obj->assignUID();
 	
 	$dot_script			= $xhprof_callgraph->dot($callstack);
 	

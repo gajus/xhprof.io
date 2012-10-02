@@ -15,6 +15,8 @@ if(empty($aggregated_stack))
 	throw new Exception('This function is expected to always return data.');
 }
 
+#ay($aggregated_stack);
+
 $aggregated_stack	= array_map(function($e) use ($request)
 {
 	$e['metrics']				= xhprof_format_metrics($e['metrics']);
@@ -30,22 +32,19 @@ $aggregated_stack	= array_map(function($e) use ($request)
 	return $e;
 }, $aggregated_stack);
 
-// segregate and ro-order: caller, callee, children
-// @to shouldn't this go to getAggregatedStack()?
-$callee			= $aggregated_stack[$_GET['xhprof']['query']['callee_id']];
-
-unset($aggregated_stack[$_GET['xhprof']['query']['callee_id']]);
-
-array_unshift($aggregated_stack, $callee);
-
-/*if(!empty($callee['caller_id']))
+if($aggregated_stack[0]['callee_id'] == $_GET['xhprof']['query']['callee_id'])
 {
-	$caller		= $aggregated_stack[$callee['caller_id']];
-
-	unset($aggregated_stack[$callee['caller_id']]);
-	
-	array_unshift($aggregated_stack, $caller);
-}*/
+	$callee	= $aggregated_stack[0];
+}
+else if($aggregated_stack[0]['caller_id'] === NULL)
+{
+	$callee	= $aggregated_stack[0];
+}
+else
+{
+	$caller	= $aggregated_stack[0];
+	$callee	= $aggregated_stack[1];
+}
 
 $children		= array();
 ?>

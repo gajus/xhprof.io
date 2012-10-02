@@ -41,7 +41,12 @@ define('AY_URL_FRONTEND', $config['xhprof_url']);
 
 require AY_ROOT . '/ay/includes/helpers.ay.inc.php';
 require AY_ROOT . '/ay/includes/helpers.xhprof.inc.php';
-require_once AY_ROOT . '/ay/classes/xhprof.class.php';
+
+// If XHProf is included using php.ini prepend/append, require_once will prevent the same class being included more than once.
+require_once AY_ROOT . '/ay/classes/xhprof.data.class.php';
+
+require AY_ROOT . '/ay/classes/xhprof.class.php';
+require AY_ROOT . '/ay/classes/xhprof.callgraph.class.php';
 
 if(filter_has_var(INPUT_POST, 'ay'))
 {

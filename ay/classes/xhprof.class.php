@@ -634,7 +634,7 @@ class XHProf
 			$functions	= array_filter($functions, function($e) use ($function_id) { return $e['caller_id'] == $function_id || $e['callee_id'] == $function_id; });
 		}
 		
-		return $functions;
+		return array_values($functions);
 	}
 	
 	/**

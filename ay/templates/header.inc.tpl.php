@@ -23,6 +23,7 @@ $labels	= array
 	'uri_id'		=> 'URI #',
 	'uri'			=> 'URI',
 	'request_id'	=> 'Request #',
+	'second_request_id'	=> 'Second Request #',
 	'callee_id'		=> 'Function #',
 	'datetime_from'	=> 'Date-time from',
 	'datetime_to'	=> 'Date-time to',

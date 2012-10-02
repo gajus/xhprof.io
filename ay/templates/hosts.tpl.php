@@ -19,7 +19,7 @@ require __DIR__ . '/summary.inc.tpl.php';
 ?>
 <div class="table-wrapper">
 	<table class="hosts ay-sort">
-		<thead>
+		<thead class="ay-sticky">
 			<tr>
 				<th class="ay-sort ay-sort-asc host" rowspan="2">Host</th>
 				<th class="ay-sort request-count" rowspan="2">Request Count</th>

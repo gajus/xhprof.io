@@ -19,7 +19,7 @@ body
 		p { margin: 0; }
 		
 		dl { margin: 5px 0 0 0; overflow: hidden; }
-		dt { float: left; margin: 0; font-weight: bold; width: 100px; padding: 2px 5px; clear: both; }
+		dt { float: left; margin: 0; font-weight: bold; width: 120px; padding: 2px 5px; clear: both; }
 		dd { margin: 0 0 0 111px; font-family: monospace; padding: 2px 5px; }		
 	}
 	
@@ -192,7 +192,7 @@ table
 		{
 			background: #f3f3f3; border-top: 1px solid #fff;
 			
-			td { word-wrap: break-word; }
+			td { word-wrap: break-word; vertical-align: top; }
 			
 			&:hover { background: #ffffcc; }
 		}
@@ -266,6 +266,27 @@ table
 			&.g-8 { background: #7f7f7f; }
 			&.g-9 { background: #bcbd22; }
 			&.g-10 { background: #17becf; }
+		}
+		
+		td.dual { padding: 0; }
+		
+		div.metrics-parameter
+		{
+			overflow: hidden; padding: 5px;
+			
+			&.change-decrease,
+			&.change-increase { margin-top: 2px; cursor: pointer; }
+			
+			&.change-decrease,
+			&.change-decrease span { background: #51a351; color: #fff; }
+			&.change-increase,
+			&.change-increase span { background: #DD3C10; color: #fff; }
+			
+			/*
+			&.notice { background: #ffffd6; border: 1px solid #d8aa00; }
+			&.error { background: #FFEBE8; border: 1px solid #DD3C10; }
+			&.success { background: #dceddc; border: 1px solid #51a351; }
+			&.important { background: #f3f7fd; border: 1px solid #3a87ad; }*/
 		}
 	}
 	

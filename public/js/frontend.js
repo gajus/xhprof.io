@@ -1,28 +1,37 @@
-/*
-(function($){
-	$.fn.ayTableEmpty	= function(){
-		this.each(function(){
-			var table			= $(this);
-			
-			var colspan			= 0;
-			
-			table.find('thead tr').eq(0).find('th').each(function(){
-				colspan	+= $(this).attr('colspan') ? parseInt($(this).attr('colspan')) : 1;
-			});
-			
-			table.find('tbody').each(function(){
-				if(!$(this).find('tr').length)
-				{
-					$(this).append($('<tr><td></td></tr>').addClass('empty').find('td').attr('colspan', colspan).text('No data.').parent());
-				}
-			});
-		});
-	};
-})($);
-*/
-
 $(function(){
 	$('table.ay-sort').ayTableSort();
 	$('thead.ay-sticky').ayTableSticky();
-	//$('table').ayTableEmpty();
+	
+	if($('table.aggregated-callstack').length)
+	{
+		var alternate	= $('[data-ay-alternate]');
+	
+		alternate.on('ay-alternate', function(e, stage){
+			var data	= $(this).data('ay-alternate');
+			
+			$(this).data('ay-alternate-stage', stage);
+			
+			$(this).html(data[stage]);
+		});
+		
+		alternate.on('click', function(){
+			var data	= $(this).data('ay-alternate');
+			var stage	= $(this).data('ay-alternate-stage');
+			
+			if(typeof stage == 'undefined')
+			{
+				stage	= 0;
+			}
+			else if(typeof data[stage+1] != 'undefined')
+			{
+				++stage;
+			}
+			else
+			{
+				stage	= 0;
+			}
+			
+			alternate.trigger('ay-alternate', stage);
+		});
+	}
 });

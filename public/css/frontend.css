@@ -40,7 +40,7 @@ body > .filters dt {
   float: left;
   margin: 0;
   font-weight: bold;
-  width: 100px;
+  width: 120px;
   padding: 2px 5px;
   clear: both;
 }
@@ -314,6 +314,7 @@ table tbody tr {
 }
 table tbody tr td {
   word-wrap: break-word;
+  vertical-align: top;
 }
 table tbody tr:hover {
   background: #ffffcc;
@@ -402,6 +403,34 @@ table.aggregated-callstack span.group.g-9 {
 }
 table.aggregated-callstack span.group.g-10 {
   background: #17becf;
+}
+table.aggregated-callstack td.dual {
+  padding: 0;
+}
+table.aggregated-callstack div.metrics-parameter {
+  overflow: hidden;
+  padding: 5px;
+  /*
+			&.notice { background: #ffffd6; border: 1px solid #d8aa00; }
+			&.error { background: #FFEBE8; border: 1px solid #DD3C10; }
+			&.success { background: #dceddc; border: 1px solid #51a351; }
+			&.important { background: #f3f7fd; border: 1px solid #3a87ad; }*/
+
+}
+table.aggregated-callstack div.metrics-parameter.change-decrease,
+table.aggregated-callstack div.metrics-parameter.change-increase {
+  margin-top: 2px;
+  cursor: pointer;
+}
+table.aggregated-callstack div.metrics-parameter.change-decrease,
+table.aggregated-callstack div.metrics-parameter.change-decrease span {
+  background: #51a351;
+  color: #fff;
+}
+table.aggregated-callstack div.metrics-parameter.change-increase,
+table.aggregated-callstack div.metrics-parameter.change-increase span {
+  background: #DD3C10;
+  color: #fff;
 }
 table th.ay-sort {
   cursor: pointer;

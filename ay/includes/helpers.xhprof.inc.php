@@ -41,39 +41,6 @@ function xhprof_uuid()
 	);
 }
 
-function xhprof_format_metrics(array $data)
-{
-	$format	= array
-	(
-		'request_count'	=> 'number_format',
-		
-		'ct'			=> 'xhprof_format_number',
-		'wt'			=> 'xhprof_format_microseconds',
-		'cpu'			=> 'xhprof_format_microseconds',
-		'mu'			=> 'xhprof_format_bytes',
-		'pmu'			=> 'xhprof_format_bytes'
-	);
-	
-	/*array_walk_recursive($data, function($v, $k) use ($format) {
-		if(isset($format[$k]))
-		{
-			$v	= array('raw' => $v, 'formatted' => call_user_func($format[$k], $v));
-		}
-	});
-	
-	return $data;*/
-	
-	foreach($data as $k => $v)
-	{
-		if(isset($format[$k]))
-		{
-			$data[$k]	= array('raw' => $v, 'formatted' => call_user_func($format[$k], $v));
-		}
-	}
-	
-	return $data;
-}
-
 function xhprof_calculate_percentage_change($original_value, $new_value)
 {
 	if($original_value == 0)
@@ -136,19 +103,19 @@ function xhprof_format_microseconds($time, $format = TRUE)
 	$pad	= FALSE;
 	$suffix	= 'µs';
 
-	if ($time >= 1000)
+	if (abs($time) >= 1000)
 	{
 		$time	= $time / 1000;
 		$suffix	= 'ms';
 		
-		if ($time >= 1000)
+		if (abs($time) >= 1000)
 		{
 			$pad	= TRUE;
 			
 			$time	= $time / 1000;
 			$suffix	= 's';
 			
-			if ($time >= 60)
+			if (abs($time) >= 60)
 			{
 				$time	= $time / 60;
 				$suffix	= 'm';
@@ -162,6 +129,60 @@ function xhprof_format_microseconds($time, $format = TRUE)
 	}
 	
 	return $format ? '<span class="value">' . $time . '</span> <span class="measure">' . $suffix . '</span>' : $time . ' ' . $suffix;
+}
+
+function xhprof_format_metrics_2($input, $metrics_name)
+{
+	$format	= array
+	(
+		'request_count'	=> 'number_format',
+		
+		'ct'			=> 'xhprof_format_number',
+		'wt'			=> 'xhprof_format_microseconds',
+		'cpu'			=> 'xhprof_format_microseconds',
+		'mu'			=> 'xhprof_format_bytes',
+		'pmu'			=> 'xhprof_format_bytes'
+	);
+	
+	if(!isset($format[$metrics_name]))
+	{
+		throw new XHProfException('Unrecognised metrics name.');
+	}
+	
+	return call_user_func($format[$metrics_name], $input);
+}
+
+function xhprof_format_metrics(array $data)
+{
+	$format	= array
+	(
+		'request_count'	=> 'number_format',
+		
+		'ct'			=> 'xhprof_format_number',
+		'wt'			=> 'xhprof_format_microseconds',
+		'cpu'			=> 'xhprof_format_microseconds',
+		'mu'			=> 'xhprof_format_bytes',
+		'pmu'			=> 'xhprof_format_bytes'
+	);
+	
+	/*array_walk_recursive($data, function($v, $k) use ($format) {
+		if(isset($format[$k]))
+		{
+			$v	= array('raw' => $v, 'formatted' => call_user_func($format[$k], $v));
+		}
+	});
+	
+	return $data;*/
+	
+	foreach($data as $k => $v)
+	{
+		if(isset($format[$k]))
+		{
+			$data[$k]	= array('raw' => $v, 'formatted' => call_user_func($format[$k], $v));
+		}
+	}
+	
+	return $data;
 }
 
 function xhprof_recursive_unset(&$array, $blacklist)

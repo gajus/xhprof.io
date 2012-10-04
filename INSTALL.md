@@ -2,7 +2,7 @@ To begin with, you need to install the XHProf extension. Refer to the [PHP docum
 
 You will need to manually create the database and populate it with the provided scheme. The database scheme is located at `/setup/database.sql`.
 
-The configuration file is located at `/ay/includes/config.inc.php`. There are only two supported parameters.
+Rename the `/ay/includes/config.inc.sample.php` to `/ay/includes/config.inc.php`. There are only two supported parameters.
 
 * `xhprof_url` is the URL to the XHProf.io library.
 * `pdo` is the PDO instance. This library uses [PDO](http://uk3.php.net/pdo) to handle all of the database operations.

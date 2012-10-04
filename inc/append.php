@@ -1,28 +1,15 @@
 <?php
-
-#return;
-if(!in_array($_SERVER['HTTP_HOST'], ['xhprof.io', 'sinonimai.lt']))
-{
-	#return;
-}
-
-if(empty($_GET['test']))
+// CLI environment is currently not supported
+if(php_sapi_name() == 'cli')
 {
 	return;
 }
-
 
 $xhprof_data	= xhprof_disable();
 
 if(function_exists('fastcgi_finish_request'))
 {
 	fastcgi_finish_request();
-}
-
-// CLI environment is currently not supported
-if(php_sapi_name() == 'cli')
-{
-	return;
 }
 
 $config			= require __DIR__ . '/../ay/includes/config.inc.php';

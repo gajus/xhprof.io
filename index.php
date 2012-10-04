@@ -7,8 +7,7 @@ require __DIR__ . '/ay/includes/bootstrap.inc.php';
 $template			= array
 (
 	'file'			=> 'error',
-	'title'			=> NULL,
-	'class'			=> NULL
+	'title'			=> NULL
 );
 
 $templates			= array('requests', 'request', 'uris', 'hosts', 'function');

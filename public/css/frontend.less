@@ -6,12 +6,12 @@ body
 	{
 		overflow: hidden; background: #4d7bd6; border-bottom: 1px solid #2d53af; padding-left: 20px;
 		
-		a { text-decoration: none; float: left; padding: 0 30px 0 20px; line-height: 35px; color: #fff; border-left: 1px solid #6090dd; }
+		a { text-decoration: none; float: left; padding: 0 20px; line-height: 35px; color: #fff; border-left: 1px solid #6090dd; }
 		a:hover { background: #6090dd; }
 		
 		a.active { background: #6090dd; }
 		
-		a.callgraph { background: #fff; color: #111; padding: 0 20px; }
+		a.callgraph { background: #fff; color: #111; }
 	}
 	
 	> .filters
@@ -53,13 +53,35 @@ body
 	g.axis { pointer-events: none; }
 }
 
+.pie-layout
+{
+	overflow: hidden; margin: 20px;
+	
+	svg { width: 200px; height: 200px; float: left; margin: 0 20px 0 0; background: #F3F3F3; border: 1px solid #E3E3E3; }
+
+	.slice path
+	{
+		&.g-1 { fill: #1f77b4; }
+		&.g-2 { fill: #ff7f0e; }
+		&.g-3 { fill: #2ca02c; }
+		&.g-4 { fill: #d62728; }
+		&.g-5 { fill: #9467bd; }
+		&.g-6 { fill: #8c564b; }
+		&.g-7 { fill: #e377c2; }
+		&.g-8 { fill: #7f7f7f; }
+		&.g-9 { fill: #bcbd22; }
+		&.g-10 { fill: #17becf; }
+
+	}	
+}
+
 .histogram-layout
 {
-	margin: 20px; overflow: hidden; background: #f00; border-left: 1px solid #E3E3E3; border-top: 1px solid #E3E3E3;
+	margin: 20px; overflow: hidden; border-left: 1px solid #E3E3E3; border-top: 1px solid #E3E3E3;
 	
 	> .left,
 	> .right,
-	> .center { height: 500px; background: #00F; }
+	> .center { height: 500px; }
 	
 	> .left { float: left; width: 40%; }
 	> .right { float: right; width: 30%; }

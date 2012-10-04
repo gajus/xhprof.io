@@ -5,9 +5,9 @@
 # http://www.sequelpro.com/
 # http://code.google.com/p/sequel-pro/
 #
-# Host: 127.0.0.1 (MySQL 5.5.27)
+# Host: 127.0.0.1 (MySQL 5.5.28)
 # Database: 2012 09 16 xhprof
-# Generation Time: 2012-09-17 15:21:42 +0000
+# Generation Time: 2012-10-04 13:39:42 +0000
 # ************************************************************
 
 
@@ -36,7 +36,7 @@ CREATE TABLE `calls` (
   `caller_id` int(10) unsigned DEFAULT NULL,
   `callee_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `caller_id` (`caller_id`,`request_id`,`wt`,`cpu`,`mu`,`pmu`)
+  KEY `request_id` (`request_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -106,7 +106,7 @@ CREATE TABLE `request_uris` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uri` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uri` (`uri`)
+  KEY `id` (`id`,`uri`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -121,15 +121,17 @@ CREATE TABLE `requests` (
   `request_host_id` int(10) unsigned NOT NULL,
   `request_uri_id` int(10) unsigned NOT NULL,
   `request_method_id` int(10) unsigned NOT NULL,
+  `request_caller_id` int(10) unsigned NOT NULL,
   `https` tinyint(3) unsigned NOT NULL,
   `request_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `request_host_id` (`request_host_id`),
-  KEY `request_uri_id` (`request_uri_id`),
   KEY `request_method_id` (`request_method_id`),
-  CONSTRAINT `requests_ibfk_1` FOREIGN KEY (`request_host_id`) REFERENCES `request_hosts` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `requests_ibfk_2` FOREIGN KEY (`request_uri_id`) REFERENCES `request_uris` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `requests_ibfk_3` FOREIGN KEY (`request_method_id`) REFERENCES `request_methods` (`id`) ON DELETE CASCADE
+  KEY `request_timestamp` (`request_timestamp`),
+  KEY `request_uri_id` (`request_uri_id`,`request_caller_id`),
+  CONSTRAINT `requests_ibfk_5` FOREIGN KEY (`request_uri_id`) REFERENCES `request_uris` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `requests_ibfk_3` FOREIGN KEY (`request_method_id`) REFERENCES `request_methods` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `requests_ibfk_4` FOREIGN KEY (`request_host_id`) REFERENCES `request_hosts` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

@@ -12,7 +12,7 @@ body > .navigation {
 body > .navigation a {
   text-decoration: none;
   float: left;
-  padding: 0 30px 0 20px;
+  padding: 0 20px;
   line-height: 35px;
   color: #fff;
   border-left: 1px solid #6090dd;
@@ -26,7 +26,6 @@ body > .navigation a.active {
 body > .navigation a.callgraph {
   background: #fff;
   color: #111;
-  padding: 0 20px;
 }
 body > .filters {
   background: #ffffd6;
@@ -102,10 +101,51 @@ body > .footer {
 .multidimensional-filter g.axis {
   pointer-events: none;
 }
+.pie-layout {
+  overflow: hidden;
+  margin: 20px;
+}
+.pie-layout svg {
+  width: 200px;
+  height: 200px;
+  float: left;
+  margin: 0 20px 0 0;
+  background: #F3F3F3;
+  border: 1px solid #E3E3E3;
+}
+.pie-layout .slice path.g-1 {
+  fill: #1f77b4;
+}
+.pie-layout .slice path.g-2 {
+  fill: #ff7f0e;
+}
+.pie-layout .slice path.g-3 {
+  fill: #2ca02c;
+}
+.pie-layout .slice path.g-4 {
+  fill: #d62728;
+}
+.pie-layout .slice path.g-5 {
+  fill: #9467bd;
+}
+.pie-layout .slice path.g-6 {
+  fill: #8c564b;
+}
+.pie-layout .slice path.g-7 {
+  fill: #e377c2;
+}
+.pie-layout .slice path.g-8 {
+  fill: #7f7f7f;
+}
+.pie-layout .slice path.g-9 {
+  fill: #bcbd22;
+}
+.pie-layout .slice path.g-10 {
+  fill: #17becf;
+}
 .histogram-layout {
   margin: 20px;
   overflow: hidden;
-  background: #f00;
   border-left: 1px solid #E3E3E3;
   border-top: 1px solid #E3E3E3;
 }
@@ -113,7 +153,6 @@ body > .footer {
 .histogram-layout > .right,
 .histogram-layout > .center {
   height: 500px;
-  background: #00F;
 }
 .histogram-layout > .left {
   float: left;

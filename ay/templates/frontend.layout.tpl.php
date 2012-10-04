@@ -11,12 +11,13 @@
 	<script type="text/javascript" src="public/js/d3.v2.js"></script>
 	<script type="text/javascript" src="public/js/crossfilter.v1.js"></script>
 	<script type="text/javascript" src="public/js/d3.crossfilter.ay-histogram.js"></script>
+	<script type="text/javascript" src="public/js/d3.ay-pie-chart.js"></script>
 	
 	<script type="text/javascript" src="public/js/frontend.js"></script>
 	
 	<title>XHProf.io</title>
 </head>
-<body>
+<body class="template-<?=$template['file']?>">
 	<?php require __DIR__ . '/header.inc.tpl.php';?>
 	
 	<?=ay_display_messages()?>

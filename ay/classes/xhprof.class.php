@@ -154,9 +154,9 @@ class XHProf
 		}, $callstack);
 	}
 	
-	public function groupStack($aggregated_stack)
+	public function getGroupedStack()
 	{
-		$groups	= array();
+		$aggregated_stack	= $this->getAggregatedStack();
 		
 		foreach($aggregated_stack as $e)
 		{
@@ -172,11 +172,12 @@ class XHProf
 				(
 					'index'		=> $e['group']['index'],
 					'name'		=> $e['group']['name'],
-					'metrics'	=> $e['metrics']['exclusive']
+					'metrics'	=> $e['metrics']['exclusive'] + array('ct' => 0)
 				);
 			}
 			else
 			{
+				$groups[$e['group']['index']]['metrics']['ct']	+= $e['metrics']['ct'];
 				$groups[$e['group']['index']]['metrics']['wt']	+= $e['metrics']['exclusive']['wt'];
 				$groups[$e['group']['index']]['metrics']['cpu']	+= $e['metrics']['exclusive']['cpu'];
 				$groups[$e['group']['index']]['metrics']['mu']	+= $e['metrics']['exclusive']['mu'];

@@ -186,10 +186,10 @@ class XHProfData
 		
 		$request_id	= $this->db->lastInsertId();
 		
-		$sth1	= $this->db->prepare("INSERT INTO `calls` SET `request_id` = :request_id, `ct` = :ct, `wt` = :wt, `cpu` = :cpu, `mu` = :mu, `pmu` = :pmu, `caller_id` = :caller_id, `callee_id` = :callee_id;");
+		$sth1		= $this->db->prepare("INSERT INTO `calls` SET `request_id` = :request_id, `ct` = :ct, `wt` = :wt, `cpu` = :cpu, `mu` = :mu, `pmu` = :pmu, `caller_id` = :caller_id, `callee_id` = :callee_id;");
 		
-		$sth2	= $this->db->prepare("SELECT `id` FROM `players` WHERE `name` = :name;");
-		$sth3	= $this->db->prepare("INSERT INTO `players` SET `name` = :name;");
+		$sth2		= $this->db->prepare("SELECT `id` FROM `players` WHERE `name` = :name;");
+		$sth3		= $this->db->prepare("INSERT INTO `players` SET `name` = :name;");
 		
 		foreach($xhprof_data as $call => $data)
 		{
@@ -251,6 +251,14 @@ class XHProfData
 			}
 			
 			$sth1->execute();
+			
+			if(count($call) == 1)
+		    {
+		    	$call_id	= $this->db->lastInsertId();
+		    
+			    $this->db->prepare("UPDATE `requests` SET `request_caller_id` = :request_caller_id WHERE `id` = :request_id;")
+			    	->execute(array('request_caller_id' => $call_id, 'request_id' => $request_id));
+		    }
 		}
 		
 		return $request_id;

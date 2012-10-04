@@ -1,12 +1,6 @@
 <?php
-#return;
-
-if(!in_array($_SERVER['HTTP_HOST'], ['xhprof.io', 'sinonimai.lt']))
-{
-	#return;
-}
-
-if(empty($_GET['test']))
+// currently not supported
+if(php_sapi_name() == 'cli')
 {
 	return;
 }

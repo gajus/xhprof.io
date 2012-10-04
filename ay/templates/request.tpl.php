@@ -50,6 +50,8 @@ if(isset($_GET['xhprof']['query']['second_request_id']))
 
 require __DIR__ . '/form.inc.tpl.php';
 
+require __DIR__ . '/pie.inc.tpl.php';
+
 $fn_metrics_column	= function($parameter, $group)
 {
 	// The following globals refer to the variables within the foreach loop.

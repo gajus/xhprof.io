@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.5.28)
 # Database: 2012 09 16 xhprof
-# Generation Time: 2012-10-04 13:39:42 +0000
+# Generation Time: 2012-10-04 15:08:13 +0000
 # ************************************************************
 
 
@@ -36,7 +36,8 @@ CREATE TABLE `calls` (
   `caller_id` int(10) unsigned DEFAULT NULL,
   `callee_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `request_id` (`request_id`)
+  KEY `request_id` (`request_id`),
+  CONSTRAINT `calls_ibfk_1` FOREIGN KEY (`request_id`) REFERENCES `requests` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

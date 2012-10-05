@@ -1,3 +1,6 @@
+<?php
+namespace xhprof;
+?>
 <div class="histogram-layout">
 	<div class="left">
 		<div class="column">

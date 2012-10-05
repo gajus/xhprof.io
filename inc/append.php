@@ -16,5 +16,5 @@ $config			= require __DIR__ . '/../ay/includes/config.inc.php';
 
 require_once __DIR__ . '/../ay/classes/xhprof.data.class.php';
 
-$xhprof_data_obj	= new XHProfData($config['pdo']);
+$xhprof_data_obj	= new XHProf\Data($config['pdo']);
 $xhprof_data_obj->save($xhprof_data);

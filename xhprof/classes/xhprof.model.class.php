@@ -1,5 +1,7 @@
 <?php
-class XHProf
+namespace xhprof;
+
+class Model
 {
 	private $request;
 
@@ -199,7 +201,7 @@ class XHProf
 		
 		if(!isset($e['internal'], $e['callee']))
 		{
-			throw new XHProfException('Data format does not comply with the XHProf conventions.');
+			throw new ModelException('Data format does not comply with the XHProf conventions.');
 		}
 		
 		if($e['internal'])
@@ -226,4 +228,4 @@ class XHProf
 	}
 }
 
-class XHProfException extends Exception {}
+class ModelException extends \Exception {}

@@ -1,11 +1,13 @@
 <?php
-if(!ay_error_present())
+namespace xhprof;
+
+if(!\ay\error_present())
 {
 	$data	= $xhprof_data_obj->getUris($_GET['xhprof']['query']);
 	
 	if(empty($data))
 	{
-		ay_message('No results matching your search were found.', AY_MESSAGE_NOTICE);
+		message('No results matching your search were found.', AY_MESSAGE_NOTICE);
 	}
 }
 
@@ -16,7 +18,7 @@ if(empty($data['discrete']))
 	return;
 }
 
-$data['aggregated']	= xhprof_format_metrics($data['aggregated']);
+$data['aggregated']	= format_metrics($data['aggregated']);
 
 require __DIR__ . '/summary.inc.tpl.php';
 ?>
@@ -40,13 +42,13 @@ require __DIR__ . '/summary.inc.tpl.php';
 		</thead>
 		<tbody>
 			<?php foreach($data['discrete'] as $e):
-				$e	= xhprof_format_metrics($e);			
+				$e	= format_metrics($e);			
 			?>
 			<tr>
 				<?php if(empty($_GET['ay']['query']['host_id'])):?>
-				<td><a href="<?=xhprof_url('uris', array('host_id' => $e['host_id']))?>"><?=htmlspecialchars($e['host'])?></a></td>
+				<td><a href="<?=url('uris', array('host_id' => $e['host_id']))?>"><?=htmlspecialchars($e['host'])?></a></td>
 				<?php endif;?>
-				<td><a href="<?=xhprof_url('requests', array('host_id' => $e['host_id'], 'uri_id' => $e['uri_id']))?>"><?=htmlspecialchars($e['uri'])?></a></td>
+				<td><a href="<?=url('requests', array('host_id' => $e['host_id'], 'uri_id' => $e['uri_id']))?>"><?=htmlspecialchars($e['uri'])?></a></td>
 				<td class="metrics" data-ay-sort-weight="<?=$e['request_count']['raw']?>"><?=$e['request_count']['formatted']?></td>
 				<td class="metrics" data-ay-sort-weight="<?=$e['wt']['raw']?>"><?=$e['wt']['formatted']?></td>
 				<td class="metrics" data-ay-sort-weight="<?=$e['cpu']['raw']?>"><?=$e['cpu']['formatted']?></td>
@@ -59,7 +61,7 @@ require __DIR__ . '/summary.inc.tpl.php';
 			<tr>
 				<td colspan="2">
 					<?php if(!empty($template['filters'])):?>
-					<a href="<?=xhprof_url('uri', $template['filters'])?>">View requests [with fitlers]</a>
+					<a href="<?=url('uri', $template['filters'])?>">View requests [with filters]</a>
 					<?php endif;?>
 				</td>
 				<td class="metrics"><?=$data['aggregated']['request_count']['formatted']?></td>

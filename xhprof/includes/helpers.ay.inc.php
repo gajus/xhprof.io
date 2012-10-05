@@ -1,4 +1,6 @@
 <?php
+namespace ay;
+
 /**
  * @author Gajus Kuizinas <g.kuizinas@anuary.com>
  * @version 1.0.3 (2012 06 19)
@@ -15,7 +17,7 @@ function ay()
 		header('Content-Type: text/plain');
 	}
 	
-	if(!AY_DEBUG)
+	if(!DEBUG)
 	{
 		echo 'The requested content is inaccessible. Please try again later.';
 		
@@ -26,15 +28,15 @@ function ay()
 	$trace	= debug_backtrace();
 	$trace	= array_shift($trace);
 	
-	echo 'ay() called in ' . mb_substr($trace['file'], mb_strlen(AY_ROOT)) . ' (' . $trace['line'] . ').' . PHP_EOL . PHP_EOL;
+	ob_start();
+	echo 'ay\ay() called in ' . $trace['file'] . ' (' . $trace['line'] . ').' . PHP_EOL . PHP_EOL;
 	
 	call_user_func_array('var_dump', func_get_args());
 	
 	echo PHP_EOL . 'Backtrace:' . PHP_EOL . PHP_EOL;
 	
-	ob_start();
 	debug_print_backtrace();
-	echo str_replace(AY_ROOT, '', ob_get_clean());
+	echo str_replace(realpath(BASE_PATH . '/..'), '[xhprof.io]', ob_get_clean());
 	
 	exit;
 }
@@ -43,7 +45,7 @@ function ay()
  * @author Gajus Kuizinas <g.kuizinas@anuary.com>
  * @version 1.3 (2012 08 16)
  */
-function ay_message($message, $type = AY_MESSAGE_ERROR)
+function message($message, $type = MESSAGE_ERROR)
 {
     $_SESSION['ay']['flash']['messages'][$type][]	= $message;
 }
@@ -52,7 +54,7 @@ function ay_message($message, $type = AY_MESSAGE_ERROR)
  * @author Gajus Kuizinas <g.kuizinas@anuary.com>
  * @version 2.1
  */
-function ay_display_messages()
+function display_messages()
 {
 	static $already_displayed	= FALSE;
 	
@@ -67,10 +69,10 @@ function ay_display_messages()
 
     $messages_types				= array
     (
-		AY_MESSAGE_NOTICE		=> 'notice',
-		AY_MESSAGE_SUCCESS		=> 'success',
-		AY_MESSAGE_ERROR		=> 'error',
-		AY_MESSAGE_IMPORTANT	=> 'important'
+		MESSAGE_NOTICE		=> 'notice',
+		MESSAGE_SUCCESS		=> 'success',
+		MESSAGE_ERROR		=> 'error',
+		MESSAGE_IMPORTANT	=> 'important'
 	);
 	
     if(!empty($_SESSION['ay']['flash']['messages']))
@@ -83,10 +85,6 @@ function ay_display_messages()
 		
 			foreach($messages as $message)
 			{
-				$message	= preg_replace_callback('/\*([\w\s]+)\*/', function($m){
-					return '<span class="highlight">' . $m[1] . '</span>';
-				}, $message);
-			
 				$return	.= '<li>' . $message . '</li>';
 			}
 			
@@ -101,47 +99,40 @@ function ay_display_messages()
  * @author Gajus Kuizinas <g.kuizinas@anuary.com>
  * @version 1.4 (2012 08 16)
  */
-function ay_error_present()
+function error_present()
 {
-	if(empty($_SESSION['ay']['flash']['messages'][AY_MESSAGE_ERROR]))
-	{	
-		return FALSE;
-	}
-	else
-	{
-		return TRUE;
-	}
+	return !empty($_SESSION['ay']['flash']['messages'][MESSAGE_ERROR]);
 }
 
 /**
  * @author Gajus Kuizinas <g.kuizinas@anuary.com>
  * @version 1.0.6 (2012 08 16)
  */
-function ay_redirect($url = AY_REDIRECT_REFERRER, $message_text = NULL, $message_type = AY_MESSAGE_ERROR)
+function redirect($url = REDIRECT_REFERRER, $message_text = NULL, $message_type = MESSAGE_ERROR)
 {
 	// If there aren't any error, then clear the persistent user input.
-	if(!ay_error_present())
+	if(!error_present())
 	{
 		unset($_SESSION['ay']['flash']['input']);
 	}
 
 	if($message_text !== NULL)
     {
-		ay_message($message_text, $message_type);
+		message($message_text, $message_type);
     }
     
     if(headers_sent())
 	{
-		throw new AyException('Redirect failed. Headers already sent.');
+		throw new HelpersException('Redirect failed. Headers already sent.');
 	}
 
-    if($url === AY_REDIRECT_REFERRER)
+    if($url === REDIRECT_REFERRER)
     {    
-		$url	= empty($_SERVER['HTTP_REFERER']) ? constant('AY_URL_' . mb_strtoupper(AY_INTERFACE)) : $_SERVER['HTTP_REFERER'];
+		$url	= empty($_SERVER['HTTP_REFERER']) ? BASE_URL : $_SERVER['HTTP_REFERER'];
     }
     elseif(strpos($url, 'http://') !== 0 && strpos($url, 'https://') !== 0)
     {
-    	$url	= rtrim(constant('AY_URL_' . mb_strtoupper(AY_INTERFACE)), '/') . '/' . $url;
+    	$url	= BASE_URL . $url;
     }
 
     header('Location: ' . $url);
@@ -153,11 +144,11 @@ function ay_redirect($url = AY_REDIRECT_REFERRER, $message_text = NULL, $message
  * @author Gajus Kuizinas <g.kuizinas@anuary.com>
  * @version 1.6.8 (2012 07 02)
  */
-function ay_input($name, $label, array $input_options = NULL, array $row_options = NULL, array $return_options = NULL)
+function input($name, $label, array $input_options = NULL, array $row_options = NULL, array $return_options = NULL)
 {
 	global $input;
 	
-	// all input generated using ay_input() is sent through $_POST['ay'] array
+	// all input generated using input() is sent through $_POST['ay'] array
 	$name						= strpos($name, '[') !== FALSE ? 'ay[' . strstr($name, '[', TRUE) . ']' . strstr($name, '[') : 'ay[' . $name . ']';
 	$original_name_path			= explode('][', mb_substr($name, 3, -1));
 	
@@ -227,7 +218,7 @@ function ay_input($name, $label, array $input_options = NULL, array $row_options
 		case 'select':
 			if(empty($input_options['options']))
 			{
-				throw new AyException('Select input is missing options array.');
+				throw new HelpersException('Select input is missing options array.');
 			}
 		
 			$option_str	= '';
@@ -257,7 +248,7 @@ function ay_input($name, $label, array $input_options = NULL, array $row_options
 		case 'radio':
 			if(!array_key_exists('value', $input_options))
 			{
-				throw new AyException('Radio input is missing value parameter.');
+				throw new HelpersException('Radio input is missing value parameter.');
 			}
 			
 			$input_options['value']		= (int) $input_options['value'];
@@ -315,7 +306,7 @@ function ay_input($name, $label, array $input_options = NULL, array $row_options
 			break;
 			
 		default:
-			throw new AyException('ay_input(); unknown return type `' . $return_options['return'] . '`.');
+			throw new HelpersException('input(); unknown return type `' . $return_options['return'] . '`.');
 			break;
 	}
 	
@@ -326,7 +317,7 @@ function ay_input($name, $label, array $input_options = NULL, array $row_options
  * @author Gajus Kuizinas <g.kuizinas@anuary.com>
  * @version 1.0.4 (2012 06 19); adapted to XHProf.io
  */
-function ay_error_exception_handler()
+function error_exception_handler()
 {
 	$args	= func_get_args();
 	
@@ -363,7 +354,7 @@ function ay_error_exception_handler()
 		http_response_code(500);
 	}
 	
-	if(AY_DEBUG)
+	if(DEBUG)
 	{
 		if($data['type'] === NULL)
 		{
@@ -388,22 +379,17 @@ function ay_error_exception_handler()
 					$error_type	= 'Run-time notice.';
 					break;
 					
-				case AY_ERROR_CSS:
-					$error_type	= 'LESS error.';
-					break;
-					
 				default:
 					$error_type	= 'Unknown ' . $data['type'] . '.';
 					break;
 			}
 		}
 		
-		
-		echo "Type:\t\t{$error_type}\nMessage:\t{$data['message']}\nFile:\t\t{$data['file']}\nLine:\t\t{$data['line']}\nTime:\t\t" . date(AY_FORMAT_DATETIME) . "\n\n";
+		ob_start();
+		echo "Type:\t\t{$error_type}\nMessage:\t{$data['message']}\nFile:\t\t{$data['file']}\nLine:\t\t{$data['line']}\nTime:\t\t" . date(FORMAT_DATETIME) . "\n\n";
     	
-    	ob_start();
     	debug_print_backtrace();
-    	echo str_replace(AY_ROOT, '', ob_get_clean());
+    	echo str_replace(realpath(BASE_PATH . '/..'), '[xhprof.io]', ob_get_clean());
 	}
 	else
 	{		
@@ -417,3 +403,5 @@ function ay_error_exception_handler()
 	
 	return FALSE;
 }
+
+class HelpersException extends \Exception {}

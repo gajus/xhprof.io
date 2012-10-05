@@ -1,15 +1,15 @@
 <?php
-if(!ay_error_present())
+namespace xhprof;
+
+if(!\ay\error_present())
 {
 	$data	= $xhprof_data_obj->getRequests($_GET['xhprof']['query']);
 
 	if(empty($data))
 	{
-		ay_message('No results matching your search were found.', AY_MESSAGE_NOTICE);
+		\ay\message('No results matching your search were found.', AY_MESSAGE_NOTICE);
 	}
 }
-
-
 
 require __DIR__ . '/form.inc.tpl.php';
 
@@ -18,7 +18,7 @@ if(empty($data['discrete']))
 	return;
 }
 
-$data['aggregated']	= xhprof_format_metrics($data['aggregated']);
+$data['aggregated']	= format_metrics($data['aggregated']);
 
 require __DIR__ . '/summary.inc.tpl.php';
 
@@ -45,18 +45,18 @@ require __DIR__ . '/histogram.inc.tpl.php';
 		</thead>
 		<tbody>
 			<?php foreach($data['discrete'] as $e):
-				$e	= xhprof_format_metrics($e);			
+				$e	= format_metrics($e);			
 			?>
 			<tr data-request-id="<?=$e['request_id']?>">
-				<td><a href="<?=xhprof_url('request', array('request_id' => $e['request_id']))?>"><?=$e['request_id']?></a></td>
-				<td><a href="<?=xhprof_url('uris', array('host_id' => $e['host_id']))?>"><?=htmlspecialchars($e['host'])?></a></td>
-				<td><a href="<?=xhprof_url('uris', array('host_id' => $e['host_id'], 'uri_id' => $e['uri_id']))?>"><?=htmlspecialchars($e['uri'])?></a></td>
+				<td><a href="<?=url('request', array('request_id' => $e['request_id']))?>"><?=$e['request_id']?></a></td>
+				<td><a href="<?=url('uris', array('host_id' => $e['host_id']))?>"><?=htmlspecialchars($e['host'])?></a></td>
+				<td><a href="<?=url('uris', array('host_id' => $e['host_id'], 'uri_id' => $e['uri_id']))?>"><?=htmlspecialchars($e['uri'])?></a></td>
 				<td><?=$e['request_method']?></td>
 				<td class="metrics" data-ay-sort-weight="<?=$e['wt']['raw']?>"><?=$e['wt']['formatted']?></td>
 				<td class="metrics" data-ay-sort-weight="<?=$e['cpu']['raw']?>"><?=$e['cpu']['formatted']?></td>
 				<td class="metrics" data-ay-sort-weight="<?=$e['mu']['raw']?>"><?=$e['mu']['formatted']?></td>
 				<td class="metrics" data-ay-sort-weight="<?=$e['pmu']['raw']?>"><?=$e['pmu']['formatted']?></td>
-				<td data-ay-sort-weight="<?=$e['request_timestamp']?>"><?=date(AY_FORMAT_DATETIME, $e['request_timestamp'])?></td>
+				<td data-ay-sort-weight="<?=$e['request_timestamp']?>"><?=date(\AY\FORMAT_DATETIME, $e['request_timestamp'])?></td>
 			</tr>
 			<?php endforeach;?>
 		</tbody>

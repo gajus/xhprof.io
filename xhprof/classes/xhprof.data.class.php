@@ -1,12 +1,14 @@
 <?php
-class XHProfData
+namespace xhprof;
+
+class Data
 {
 	private $db;
 
-	public function __construct(PDO $db)
+	public function __construct(\PDO $db)
 	{		
-		$db->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
-		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		$db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, FALSE);
+		$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 		
 		$this->db	= $db;
 	}
@@ -36,7 +38,7 @@ class XHProfData
 	    	
 	    $sth->execute(array('id' => $id));
 	    
-	    $request	= $sth->fetch(PDO::FETCH_ASSOC);
+	    $request	= $sth->fetch(\PDO::FETCH_ASSOC);
 	    
 	    if(!$request)
 	    {
@@ -69,17 +71,17 @@ class XHProfData
 		    ORDER BY
 		    	`c1`.`id` DESC;
 	    	");
-	    $sth->bindValue(':request_id', $request['id'], PDO::PARAM_INT);
+	    $sth->bindValue(':request_id', $request['id'], \PDO::PARAM_INT);
 	    $sth->execute();
 	    
-	    $request['callstack']	= $sth->fetchAll(PDO::FETCH_ASSOC);
+	    $request['callstack']	= $sth->fetchAll(\PDO::FETCH_ASSOC);
 	    
 	    // The data input will never change. Therefore,
 	    // I arrange all the values manually.
 	    
 	    if($request['callstack'][0]['caller'] !== NULL)
 	    {
-		    throw new XHProfDataException('Data order does not follow the suit. Mother entry is expected to be the first in the callstack.');
+		    throw new DataException('Data order does not follow the suit. Mother entry is expected to be the first in the callstack.');
 	    }
 	    
 	    $request['total']		= array
@@ -124,7 +126,7 @@ class XHProfData
 	{
 		if(!isset($_SERVER['HTTP_HOST'], $_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']))
 		{
-			throw new XHProfDataException('XHProf cannot request in a server environment that does not define REQUEST_METHOD, HTTP_HOST or REQUEST_URI.');
+			throw new DataException('XHProf cannot request in a server environment that does not define REQUEST_METHOD, HTTP_HOST or REQUEST_URI.');
 		}
 		
 		// Look up the request method
@@ -132,7 +134,7 @@ class XHProfData
 		
 		$sth->execute(array('method' => $_SERVER['REQUEST_METHOD']));
 		
-		$request_method_id		= $sth->fetch(PDO::FETCH_COLUMN);
+		$request_method_id		= $sth->fetch(\PDO::FETCH_COLUMN);
 		
 		if(!$request_method_id)
 		{
@@ -148,7 +150,7 @@ class XHProfData
 		
 		$sth->execute(array('host' => $_SERVER['HTTP_HOST']));
 		
-		$request_host_id		= $sth->fetch(PDO::FETCH_COLUMN);
+		$request_host_id		= $sth->fetch(\PDO::FETCH_COLUMN);
 		
 		if(!$request_host_id)
 		{
@@ -164,7 +166,7 @@ class XHProfData
 		
 		$sth->execute(array('uri' => $_SERVER['REQUEST_URI']));
 		
-		$request_uri_id			= $sth->fetch(PDO::FETCH_COLUMN);
+		$request_uri_id			= $sth->fetch(\PDO::FETCH_COLUMN);
 		
 		if(!$request_uri_id)
 		{
@@ -177,10 +179,10 @@ class XHProfData
 		
 		$sth	= $this->db->prepare("INSERT INTO `requests` SET `request_host_id` = :request_host_id, `request_uri_id` = :request_uri_id, `request_method_id` = :request_method_id, `https` = :https;");
 		
-		$sth->bindValue(':request_host_id', $request_host_id, PDO::PARAM_INT);
-		$sth->bindValue(':request_uri_id', $request_uri_id, PDO::PARAM_INT);
-		$sth->bindValue(':request_method_id', $request_method_id, PDO::PARAM_INT);
-		$sth->bindValue(':https', empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == 'off' ? 0 : 1, PDO::PARAM_INT);
+		$sth->bindValue(':request_host_id', $request_host_id, \PDO::PARAM_INT);
+		$sth->bindValue(':request_uri_id', $request_uri_id, \PDO::PARAM_INT);
+		$sth->bindValue(':request_method_id', $request_method_id, \PDO::PARAM_INT);
+		$sth->bindValue(':https', empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == 'off' ? 0 : 1, \PDO::PARAM_INT);
 		
 		$sth->execute();
 		
@@ -193,12 +195,12 @@ class XHProfData
 		
 		foreach($xhprof_data as $call => $data)
 		{
-			$sth1->bindValue(':request_id', $request_id, PDO::PARAM_INT);
-			$sth1->bindValue(':ct', $data['ct'], PDO::PARAM_INT);
-			$sth1->bindValue(':wt', $data['wt'], PDO::PARAM_INT);
-			$sth1->bindValue(':cpu', $data['cpu'], PDO::PARAM_INT);
-			$sth1->bindValue(':mu', $data['mu'], PDO::PARAM_INT);
-			$sth1->bindValue(':pmu', $data['pmu'], PDO::PARAM_INT);
+			$sth1->bindValue(':request_id', $request_id, \PDO::PARAM_INT);
+			$sth1->bindValue(':ct', $data['ct'], \PDO::PARAM_INT);
+			$sth1->bindValue(':wt', $data['wt'], \PDO::PARAM_INT);
+			$sth1->bindValue(':cpu', $data['cpu'], \PDO::PARAM_INT);
+			$sth1->bindValue(':mu', $data['mu'], \PDO::PARAM_INT);
+			$sth1->bindValue(':pmu', $data['pmu'], \PDO::PARAM_INT);
 			
 			$call	= explode('==>', $call);
 						
@@ -207,7 +209,7 @@ class XHProfData
 			    // callee
 				$sth2->execute(array('name' => $call[0]));
 			    
-			    $callee_id		= $sth2->fetch(PDO::FETCH_COLUMN);
+			    $callee_id		= $sth2->fetch(\PDO::FETCH_COLUMN);
 			    
 			    if(!$callee_id)
 			    {
@@ -216,7 +218,7 @@ class XHProfData
 				    $callee_id	= $this->db->lastInsertId();
 			    }
 			    
-			    $sth1->bindValue(':caller_id', NULL, PDO::PARAM_NULL);
+			    $sth1->bindValue(':caller_id', NULL, \PDO::PARAM_NULL);
 				$sth1->bindValue(':callee_id', $callee_id);
 			}
 			else
@@ -224,7 +226,7 @@ class XHProfData
 				// caller
 				$sth2->execute(array('name' => $call[0]));
 			    
-			    $caller_id		= $sth2->fetch(PDO::FETCH_COLUMN);
+			    $caller_id		= $sth2->fetch(\PDO::FETCH_COLUMN);
 			    
 			    if(!$caller_id)
 			    {
@@ -236,7 +238,7 @@ class XHProfData
 			    // callee
 				$sth2->execute(array('name' => $call[1]));
 			    
-			    $callee_id		= $sth2->fetch(PDO::FETCH_COLUMN);
+			    $callee_id		= $sth2->fetch(\PDO::FETCH_COLUMN);
 			    
 			    if(!$callee_id)
 			    {
@@ -246,8 +248,8 @@ class XHProfData
 			    }
 			    
 			
-				$sth1->bindValue(':caller_id', $caller_id, PDO::PARAM_INT);
-				$sth1->bindValue(':callee_id', $callee_id, PDO::PARAM_INT);
+				$sth1->bindValue(':caller_id', $caller_id, \PDO::PARAM_INT);
+				$sth1->bindValue(':callee_id', $callee_id, \PDO::PARAM_INT);
 			}
 			
 			$sth1->execute();
@@ -287,7 +289,7 @@ class XHProfData
 				`host_id`
 			ORDER BY
 				`host`;
-		")->fetchAll(PDO::FETCH_ASSOC);
+		")->fetchAll(\PDO::FETCH_ASSOC);
 		
 		$data['aggregated']	= $this->getAggregatedMetrics();
 		
@@ -319,7 +321,7 @@ class XHProfData
 				`uri_id`
 			ORDER BY
 				`host`;
-		")->fetchAll(PDO::FETCH_ASSOC);
+		")->fetchAll(\PDO::FETCH_ASSOC);
 		
 		$data['aggregated']	= $this->getAggregatedMetrics();
 		
@@ -332,7 +334,7 @@ class XHProfData
 	
 		$data				= array();		
 		
-		$data['discrete']	= $this->db->query("SELECT * FROM `temporary_request_data`;")->fetchAll(PDO::FETCH_ASSOC);
+		$data['discrete']	= $this->db->query("SELECT * FROM `temporary_request_data`;")->fetchAll(\PDO::FETCH_ASSOC);
 		
 		$data['aggregated']	= $this->getAggregatedMetrics();
 		
@@ -350,7 +352,7 @@ class XHProfData
 				AVG(`pmu`) `pmu`
 			FROM
 				`temporary_request_data`;
-		")->fetch(PDO::FETCH_ASSOC);
+		")->fetch(\PDO::FETCH_ASSOC);
 	}
 	
 	public function getMetricsSummary()
@@ -377,11 +379,11 @@ class XHProfData
 			FROM
 				`temporary_request_data`;
 		")
-			->fetch(PDO::FETCH_NUM);
+			->fetch(\PDO::FETCH_NUM);
 		
 		if(!$data)
 		{
-			throw new XHProfDataException('Cannot aggregate non-existing metrics.');
+			throw new DataException('Cannot aggregate non-existing metrics.');
 		}
 			
 		$return	= array
@@ -401,8 +403,8 @@ class XHProfData
 		foreach(array('wt', 'cpu', 'mu', 'pmu') as $column)
 		{
 			// I've excluded median on purpose, because it is relatively costly calculation, arguably of any value.
-			$return[$column]['95th']	= $this->db->query("SELECT `{$column}` FROM `temporary_request_data` ORDER BY `{$column}` ASC LIMIT {$percentile_offset}, 1;")->fetch(PDO::FETCH_COLUMN);
-			$return[$column]['mode']	= $this->db->query("SELECT `{$column}` FROM `temporary_request_data` GROUP BY `{$column}` ORDER BY COUNT(`{$column}`) DESC LIMIT 1;")->fetch(PDO::FETCH_COLUMN);
+			$return[$column]['95th']	= $this->db->query("SELECT `{$column}` FROM `temporary_request_data` ORDER BY `{$column}` ASC LIMIT {$percentile_offset}, 1;")->fetch(\PDO::FETCH_COLUMN);
+			$return[$column]['mode']	= $this->db->query("SELECT `{$column}` FROM `temporary_request_data` GROUP BY `{$column}` ORDER BY COUNT(`{$column}`) DESC LIMIT 1;")->fetch(\PDO::FETCH_COLUMN);
 		}
 		
 		return $return;
@@ -429,7 +431,7 @@ class XHProfData
 		
 		if(count(array_diff_key($query, array_flip($whitelist))))
 		{
-			throw new XHProfDataException('Not supported filter parameters cannot be present in the query.');
+			throw new DataException('Not supported filter parameters cannot be present in the query.');
 		}
 		
 		// build WHERE query
@@ -440,7 +442,7 @@ class XHProfData
 		
 		if(isset($query['uri'], $query['uri_id']))
 		{
-			throw new XHProfDataException('Numerical index overwrites the string matching. Unset either to prevent unexpected results.');
+			throw new DataException('Numerical index overwrites the string matching. Unset either to prevent unexpected results.');
 		}
 		else if(isset($query['uri']))
 		{
@@ -453,7 +455,7 @@ class XHProfData
 		
 		if(isset($query['host'], $query['host_id']))
 		{
-			throw new XHProfDataException('Numerical index overwrites the string matching. Unset either to prevent unexpected results.');
+			throw new DataException('Numerical index overwrites the string matching. Unset either to prevent unexpected results.');
 		}
 		else if(isset($query['host']))
 		{
@@ -540,4 +542,4 @@ class XHProfData
 	}
 }
 
-class XHProfDataException extends Exception {}
+class DataException extends \Exception {}

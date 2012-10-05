@@ -1,5 +1,7 @@
 <?php
-ay_message('Pie charts are underway. If you have ideas how to make pie charts use less space, yet keeping them informative, kindly express your ideas to <a href="mailto:g.kuizinas@anuary.com">g.kuizinas@anuary.com</a> or contribute to <a href="https://github.com/anuary/ay-pie-chart">pie-chart</a> Git.', AY_MESSAGE_NOTICE);
+namespace xhprof;
+
+\ay\message('Pie charts are underway. If you have ideas how to make pie charts use less space, yet keeping them informative, kindly express your ideas to <a href="mailto:g.kuizinas@anuary.com">g.kuizinas@anuary.com</a> or contribute to <a href="https://github.com/anuary/ay-pie-chart">pie-chart</a> Git.', \AY\MESSAGE_NOTICE);
 
 $grouped_stack	= $xhprof_obj->getGroupedStack();
 

@@ -1,21 +1,23 @@
 <?php
+namespace xhprof;
+
 if(empty($_GET['xhprof']['query']['request_id']))
 {
-	throw new XHProfException('Request data can be accessed only through the ID.');
+	throw new \Exception('Request data can be accessed only through the ID.');
 }
 
 $request			= $xhprof_data_obj->get($_GET['xhprof']['query']['request_id']);
 
 if(!$request)
 {
-	ay_redirect(AY_REDIRECT_REFERRER, 'Request data not found.');
+	\ay\redirect(AY_REDIRECT_REFERRER, 'Request data not found.');
 }
 
-$xhprof_obj			= new XHProf($request);
+$xhprof_obj			= new Model($request);
 
 if(!empty($_GET['xhprof']['callgraph']))
 {
-	$xhprof_callgraph	= new XHProfCallgraph;
+	$xhprof_callgraph	= new Callgraph;
 	
 	$callstack	= $xhprof_obj->assignUID();
 	
@@ -32,18 +34,18 @@ if(isset($_GET['xhprof']['query']['second_request_id']))
 
 	if(!$second_request)
 	{
-		ay_redirect(AY_REDIRECT_REFERRER, 'Second request data not found.');
+		\ay\redirect(\AY\REDIRECT_REFERRER, 'Second request data not found.');
 	}
 	else if(array_map(function($e){ return $e['callee_id']; }, $request['callstack']) !== array_map(function($e){ return $e['callee_id']; }, $second_request['callstack']))
 	{
-		ay_redirect(AY_REDIRECT_REFERRER, 'Cannot compare the two requests. The callstack does not match.');
+		\ay\redirect(\AY\REDIRECT_REFERRER, 'Cannot compare the two requests. The callstack does not match.');
 	}
 	else if($request == $second_request)
 	{
-		ay_redirect(AY_REDIRECT_REFERRER, 'Cannot compare the request to itself.');
+		\ay\redirect(\AY\REDIRECT_REFERRER, 'Cannot compare the request to itself.');
 	}
 	
-	$second_xhprof_obj			= new XHProf($second_request);
+	$second_xhprof_obj			= new Model($second_request);
 	
 	$second_aggregated_stack	= $second_xhprof_obj->getAggregatedStack();
 }
@@ -139,22 +141,23 @@ $fn_metrics_column	= function($parameter, $group)
 						)
 					);
 					
-					$b['metrics']				= xhprof_format_metrics($b['metrics']);
-					$b['metrics']['inclusive']	= xhprof_format_metrics($b['metrics']['inclusive']);
-					$b['metrics']['exclusive']	= xhprof_format_metrics($b['metrics']['exclusive']);
+					$b['metrics']				= format_metrics($b['metrics']);
+					$b['metrics']['inclusive']	= format_metrics($b['metrics']['inclusive']);
+					$b['metrics']['exclusive']	= format_metrics($b['metrics']['exclusive']);
 					
-					$c['metrics']				= xhprof_format_metrics($c['metrics']);
-					$c['metrics']['inclusive']	= xhprof_format_metrics($c['metrics']['inclusive']);
-					$c['metrics']['exclusive']	= xhprof_format_metrics($c['metrics']['exclusive']);
+					$c['metrics']				= format_metrics($c['metrics']);
+					$c['metrics']['inclusive']	= format_metrics($c['metrics']['inclusive']);
+					$c['metrics']['exclusive']	= format_metrics($c['metrics']['exclusive']);
 				}
 				
-				$a['metrics']				= xhprof_format_metrics($a['metrics']);
-				$a['metrics']['inclusive']	= xhprof_format_metrics($a['metrics']['inclusive']);
-				$a['metrics']['exclusive']	= xhprof_format_metrics($a['metrics']['exclusive']);
+				$a['metrics']				= format_metrics($a['metrics']);
+				$a['metrics']['inclusive']	= format_metrics($a['metrics']['inclusive']);
+				$a['metrics']['exclusive']	= format_metrics($a['metrics']['exclusive']);
+				
 				?>
 				<tr>
-					<td><a href="<?=xhprof_url('function',array('request_id' => $request['id'], 'callee_id' => $a['callee_id']))?>"><?=$a['callee']?></a><?php if($a['group']):?><span class="group g-<?=$a['group']['index']?>"><?=$a['group']['name']?></span><?php endif;?></td>
-					<td class="metrics" data-ay-sort-weight="<?=$a['metrics']['metrics']['ct']['raw']?>"><?=$a['metrics']['ct']['formatted']?></td>
+					<td><a href="<?=url('function', array('request_id' => $request['id'], 'callee_id' => $a['callee_id']))?>"><?=$a['callee']?></a><?php if($a['group']):?><span class="group g-<?=$a['group']['index']?>"><?=$a['group']['name']?></span><?php endif;?></td>
+					<td class="metrics" data-ay-sort-weight="<?=$a['metrics']['ct']['raw']?>"><?=$a['metrics']['ct']['formatted']?></td>
 					
 					<?=$fn_metrics_column('wt', 'inclusive')?>
 					<?=$fn_metrics_column('cpu', 'inclusive')?>

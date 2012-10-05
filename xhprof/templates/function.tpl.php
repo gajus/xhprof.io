@@ -1,32 +1,32 @@
 <?php
+namespace xhprof;
+
 if(!isset($_GET['xhprof']['query']['request_id'], $_GET['xhprof']['query']['callee_id']))
 {
-	throw new Exception('Missing required arguments.');
+	throw new \Exception('Missing required arguments.');
 }
 
 $request			= $xhprof_data_obj->get($_GET['xhprof']['query']['request_id']);
 
-$xhprof_obj			= new XHProf($request);
+$xhprof_obj			= new Model($request);
 
 $aggregated_stack	= $xhprof_obj->getAggregatedStack($_GET['xhprof']['query']['callee_id']);
 
 if(empty($aggregated_stack))
 {
-	throw new Exception('This function is expected to always return data.');
+	throw new \Exception('This function is expected to always return data.');
 }
-
-#ay($aggregated_stack);
 
 $aggregated_stack	= array_map(function($e) use ($request)
 {
-	$e['metrics']				= xhprof_format_metrics($e['metrics']);
-	$e['metrics']['inclusive']	= xhprof_format_metrics($e['metrics']['inclusive']);
-	$e['metrics']['exclusive']	= xhprof_format_metrics($e['metrics']['exclusive']);
+	$e['metrics']				= format_metrics($e['metrics']);
+	$e['metrics']['inclusive']	= format_metrics($e['metrics']['inclusive']);
+	$e['metrics']['exclusive']	= format_metrics($e['metrics']['exclusive']);
 	$e['metrics']['relative']	= array();
 	
 	foreach($e['metrics']['inclusive'] as $name => $data)
 	{
-		$e['metrics']['relative'][$name]	= xhprof_format_number($request['total'][$name] == 0 ? 0 : $e['metrics']['inclusive'][$name]['raw']*100/$request['total'][$name]);
+		$e['metrics']['relative'][$name]	= format_number($request['total'][$name] == 0 ? 0 : $e['metrics']['inclusive'][$name]['raw']*100/$request['total'][$name]);
 	}	
 	
 	return $e;
@@ -105,10 +105,10 @@ $children		= array();
 				ob_start();
 			endif;?>
 			<tr<?php if($e['internal']):?> class="internal"<?php endif;?>>
-				<td><a href="<?=xhprof_url('function', array('request_id' => $request['id'], 'callee_id' => $e['callee_id']))?>"><?=$e['callee']?></a></td>
+				<td><a href="<?=url('function', array('request_id' => $request['id'], 'callee_id' => $e['callee_id']))?>"><?=$e['callee']?></a></td>
 				
 				<td class="metrics" data-ay-sort-weight="<?=$e['metrics']['ct']['raw']?>"><?=$e['metrics']['ct']['raw']?></td>
-				<td class="metrics" data-ay-sort-weight="<?=$e['metrics']['ct']['raw']*100/$request['total']['ct']?>"><?=xhprof_format_number($e['metrics']['ct']['raw']*100/$request['total']['ct'])?>%</td>
+				<td class="metrics" data-ay-sort-weight="<?=$e['metrics']['ct']['raw']*100/$request['total']['ct']?>"><?=format_number($e['metrics']['ct']['raw']*100/$request['total']['ct'])?>%</td>
 				
 				<td class="metrics" data-ay-sort-weight="<?=$e['metrics']['exclusive']['wt']['raw']?>"><?=$e['metrics']['exclusive']['wt']['formatted']?></td>
 				<td class="metrics" data-ay-sort-weight="<?=$e['metrics']['inclusive']['wt']['raw']?>"><?=$e['metrics']['inclusive']['wt']['formatted']?></td>

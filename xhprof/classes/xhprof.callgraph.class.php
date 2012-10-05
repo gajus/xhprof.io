@@ -1,5 +1,7 @@
 <?php
-class XHProfCallgraph
+namespace xhprof;
+
+class Callgraph
 {
 	/**
 	 * param	array	$callstack	The callstack must have UIDs.
@@ -15,7 +17,7 @@ class XHProfCallgraph
 		
 		if(!isset($mother['uid']))
 		{
-			throw new XHProfCallgraphException('Invalid callstack input. UIDs are not populated.');
+			throw new CallgraphException('Invalid callstack input. UIDs are not populated.');
 		}
 		
 		$group_colors	= array('#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf');
@@ -31,7 +33,7 @@ class XHProfCallgraph
 			
 			if(isset($players[$callee_uid]))
 			{
-				throw new XHProfCallgraphException('Duplicate player is not possible in an exclusive callstack.');
+				throw new CallgraphException('Duplicate player is not possible in an exclusive callstack.');
 			}
 			
 			if($debug)
@@ -65,19 +67,19 @@ class XHProfCallgraph
 					' . $ct . '
 					<tr>
 						<td align="left">wt</td>
-						<td align="left" bgcolor="0.000 ' . sprintf('%.3f', $e['metrics']['wt']/$mother['metrics']['wt']) . ' 1.000">' . xhprof_format_microseconds($e['metrics']['wt'], FALSE) . '</td>
+						<td align="left" bgcolor="0.000 ' . sprintf('%.3f', $e['metrics']['wt']/$mother['metrics']['wt']) . ' 1.000">' . format_microseconds($e['metrics']['wt'], FALSE) . '</td>
 					</tr>
 					<tr>
 						<td align="left">cpu</td>
-						<td align="left" bgcolor="0.000 ' . sprintf('%.3f', $e['metrics']['cpu']/$mother['metrics']['cpu']) . ' 1.000">' . xhprof_format_microseconds($e['metrics']['cpu'], FALSE) . '</td>
+						<td align="left" bgcolor="0.000 ' . sprintf('%.3f', $e['metrics']['cpu']/$mother['metrics']['cpu']) . ' 1.000">' . format_microseconds($e['metrics']['cpu'], FALSE) . '</td>
 					</tr>
 					<tr>
 						<td align="left">mu</td>
-						<td align="left" bgcolor="0.000 ' . sprintf('%.3f', $e['metrics']['mu']/$mother['metrics']['mu']) . ' 1.000">' . xhprof_format_bytes($e['metrics']['mu'], 2, FALSE) . '</td>
+						<td align="left" bgcolor="0.000 ' . sprintf('%.3f', $e['metrics']['mu']/$mother['metrics']['mu']) . ' 1.000">' . format_bytes($e['metrics']['mu'], 2, FALSE) . '</td>
 					</tr>
 					<tr>
 						<td align="left">pmu</td>
-						<td align="left" bgcolor="0.000 ' . sprintf('%.3f', $e['metrics']['pmu']/$mother['metrics']['pmu']) . ' 1.000">' . xhprof_format_bytes($e['metrics']['pmu'], 2, FALSE) . '</td>
+						<td align="left" bgcolor="0.000 ' . sprintf('%.3f', $e['metrics']['pmu']/$mother['metrics']['pmu']) . ' 1.000">' . format_bytes($e['metrics']['pmu'], 2, FALSE) . '</td>
 					</tr>
 				</table>
 				>];';
@@ -111,11 +113,11 @@ class XHProfCallgraph
 			array('pipe', 'w')
 		);
 		
-		$process		= proc_open('dot -Tpng', $descriptors, $pipes, AY_ROOT);
+		$process		= proc_open('dot -Tpng', $descriptors, $pipes, BASE_PATH);
 		
 		if($process === FALSE)
 		{
-			throw new XHProfException('Failed to initiate DOT process.');
+			throw new CallgraphException('Failed to initiate DOT process.');
 		}
 		
 		fwrite($pipes[0], $dot_script);
@@ -131,12 +133,12 @@ class XHProfCallgraph
 		
 		if(!empty($error))
 		{
-			throw new XHProfCallgraphException('DOT produced an error.');
+			throw new CallgraphException('DOT produced an error.');
 		}
 		
 		if(empty($output))
 		{
-			throw new XHProfCallgraphException('DOT did not output anything.');
+			throw new CallgraphException('DOT did not output anything.');
 		}
 		
 		#header('Content-Type: image/svg+xml');
@@ -148,4 +150,4 @@ class XHProfCallgraph
 	}
 }
 
-class XHProfCallgraphException extends Exception {}
+class CallgraphException extends \Exception {}

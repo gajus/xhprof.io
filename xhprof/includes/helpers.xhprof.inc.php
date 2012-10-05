@@ -1,9 +1,11 @@
 <?php
-function xhprof_url($template = NULL, array $xhprof_query = NULL, array $xhprof = array())
+namespace xhprof;
+
+function url($template = NULL, array $xhprof_query = NULL, array $xhprof = array())
 {
 	if($template === NULL)
 	{
-		return AY_URL_FRONTEND;
+		return BASE_URL;
 	}
 	
 	$query	= array
@@ -18,10 +20,14 @@ function xhprof_url($template = NULL, array $xhprof_query = NULL, array $xhprof 
 		$query['xhprof']['query']	= $xhprof_query;
 	}
 	
-	return AY_URL_FRONTEND . '?' . str_replace(array('%5B', '%5D'), array('[', ']'), http_build_query($query));
+	// Technically, this invalidates the URL. However, I prefer a readable URL.
+	return BASE_URL . '?' . str_replace(array('%5B', '%5D'), array('[', ']'), http_build_query($query));
 }
 
-function xhprof_uuid()
+/**
+ * @author Andrew Moore, http://www.php.net/manual/en/function.uniqid.php#94959.
+ */
+function uuid()
 {
 	return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
 		// 32 bits for "time_low"
@@ -44,18 +50,21 @@ function xhprof_uuid()
 	);
 }
 
-function xhprof_calculate_percentage_change($original_value, $new_value)
+function calculate_percentage_change($original_value, $new_value)
 {
 	if($original_value == 0)
 	{
 		return 'undefined';
 	}
 	
-	return xhprof_format_number((($new_value-$original_value)/$original_value)*100) . '%';
+	return format_number((($new_value-$original_value)/$original_value)*100) . '%';
 }
 
-// @todo why the inconsistency? xhprof_number_format()
-function xhprof_format_number($number)
+/**
+ * Returns the shortest expression of the number available or 0 if number is smaller than 0.0000001.
+ * @return	float	If number is less than 1E-5, will return a string.
+ */
+function format_number($number)
 {
 	$multiplier	= 100;
 	$cap		= 5;
@@ -83,7 +92,7 @@ function xhprof_format_number($number)
 	return $value;
 }
 
-function xhprof_format_bytes($size, $precision = 2, $format = TRUE)
+function format_bytes($size, $precision = 2, $format = TRUE)
 {
 	if($size == 0)
 	{
@@ -99,7 +108,7 @@ function xhprof_format_bytes($size, $precision = 2, $format = TRUE)
     return $format ? '<span class="value">' . $number . '</span> <span class="measure">' . $suffix . '</span>' : $number . ' ' . $suffix;
 }
 
-function xhprof_format_microseconds($time, $format = TRUE)
+function format_microseconds($time, $format = TRUE)
 {
 	$time	= (int) $time;
 
@@ -134,48 +143,21 @@ function xhprof_format_microseconds($time, $format = TRUE)
 	return $format ? '<span class="value">' . $time . '</span> <span class="measure">' . $suffix . '</span>' : $time . ' ' . $suffix;
 }
 
-function xhprof_format_metrics_2($input, $metrics_name)
+/**
+ * This is a helper function to quickly apply output formatting to the raw XHProf metrics data.
+ */
+function format_metrics(array $data)
 {
 	$format	= array
 	(
-		'request_count'	=> 'number_format',
+		'request_count'	=> '\number_format',
 		
-		'ct'			=> 'xhprof_format_number',
-		'wt'			=> 'xhprof_format_microseconds',
-		'cpu'			=> 'xhprof_format_microseconds',
-		'mu'			=> 'xhprof_format_bytes',
-		'pmu'			=> 'xhprof_format_bytes'
+		'ct'			=> 'xhprof\format_number',
+		'wt'			=> 'xhprof\format_microseconds',
+		'cpu'			=> 'xhprof\format_microseconds',
+		'mu'			=> 'xhprof\format_bytes',
+		'pmu'			=> 'xhprof\format_bytes'
 	);
-	
-	if(!isset($format[$metrics_name]))
-	{
-		throw new XHProfException('Unrecognised metrics name.');
-	}
-	
-	return call_user_func($format[$metrics_name], $input);
-}
-
-function xhprof_format_metrics(array $data)
-{
-	$format	= array
-	(
-		'request_count'	=> 'number_format',
-		
-		'ct'			=> 'xhprof_format_number',
-		'wt'			=> 'xhprof_format_microseconds',
-		'cpu'			=> 'xhprof_format_microseconds',
-		'mu'			=> 'xhprof_format_bytes',
-		'pmu'			=> 'xhprof_format_bytes'
-	);
-	
-	/*array_walk_recursive($data, function($v, $k) use ($format) {
-		if(isset($format[$k]))
-		{
-			$v	= array('raw' => $v, 'formatted' => call_user_func($format[$k], $v));
-		}
-	});
-	
-	return $data;*/
 	
 	foreach($data as $k => $v)
 	{
@@ -188,23 +170,7 @@ function xhprof_format_metrics(array $data)
 	return $data;
 }
 
-function xhprof_recursive_unset(&$array, $blacklist)
-{
-	foreach($blacklist as $key)
-	{
-		unset($array[$key]);
-	}
-	
-	foreach ($array as &$value)
-	{
-		if(is_array($value))
-		{
-			xhprof_recursive_unset($value, $unwanted_key);
-		}
-	}
-}
-
-function xhprof_validate_datetime($input)
+function validate_datetime($input)
 {
 	$format	= 'Y-m-d H:i:s';
 
@@ -219,3 +185,5 @@ function xhprof_validate_datetime($input)
 	
 	return (boolean) $date;
 }
+
+class HelpersException extends \Exception {}

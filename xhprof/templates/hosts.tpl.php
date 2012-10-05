@@ -1,5 +1,7 @@
 <?php
-if(!ay_error_present())
+namespace xhprof;
+
+if(!\ay\error_present())
 {
 	$data	= $xhprof_data_obj->getHosts($_GET['xhprof']['query']);
 }
@@ -8,12 +10,12 @@ require __DIR__ . '/form.inc.tpl.php';
 
 if(empty($data['discrete']))
 {
-	ay_message('No results matching your search were found.', AY_MESSAGE_NOTICE);
+	\ay\message('No results matching your search were found.', \AY\MESSAGE_NOTICE);
 
 	return;
 }
 	
-$data['aggregated']	= xhprof_format_metrics($data['aggregated']);
+$data['aggregated']	= format_metrics($data['aggregated']);
 
 require __DIR__ . '/summary.inc.tpl.php';
 ?>
@@ -35,10 +37,10 @@ require __DIR__ . '/summary.inc.tpl.php';
 		<tbody>
 			<?php
 			foreach($data['discrete'] as $e):
-				$e	= xhprof_format_metrics($e);
+				$e	= format_metrics($e);
 			?>
 			<tr>
-				<td><a href="<?=xhprof_url('uris', array('host_id' => $e['host_id']))?>"><?=htmlspecialchars($e['host'])?></a></td>
+				<td><a href="<?=url('uris', array('host_id' => $e['host_id']))?>"><?=htmlspecialchars($e['host'])?></a></td>
 				<td class="metrics" data-ay-sort-weight="<?=$e['request_count']['raw']?>"><?=$e['request_count']['formatted']?></td>
 				<td class="metrics" data-ay-sort-weight="<?=$e['wt']['raw']?>"><?=$e['wt']['formatted']?></td>
 				<td class="metrics" data-ay-sort-weight="<?=$e['cpu']['raw']?>"><?=$e['cpu']['formatted']?></td>
@@ -51,8 +53,8 @@ require __DIR__ . '/summary.inc.tpl.php';
 			<tr>
 				<td>
 					<?php if(!empty($_GET['xhprof']['query'])):?>
-						<a href="<?=xhprof_url('uris', $_GET['xhprof']['query'])?>">View URIs with the same filters</a>
-						<a href="<?=xhprof_url('requests', $_GET['xhprof']['query'])?>">View requests with the same filters</a>
+						<a href="<?=url('uris', $_GET['xhprof']['query'])?>">View URIs with the same filters</a>
+						<a href="<?=url('requests', $_GET['xhprof']['query'])?>">View requests with the same filters</a>
 					<?php endif;?>
 				</td>
 				<td class="metrics"><?=$data['aggregated']['request_count']['formatted']?></td>

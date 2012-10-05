@@ -1,7 +1,9 @@
 <?php
+namespace xhprof;
+
 ob_start();
 
-require __DIR__ . '/ay/includes/bootstrap.inc.php';
+require __DIR__ . '/xhprof/includes/bootstrap.inc.php';
 
 // Mini-dispatcher.
 $template			= array
@@ -19,7 +21,7 @@ if(empty($_GET['xhprof']['template']))
 
 if(!in_array($_GET['xhprof']['template'], $templates))
 {
-	throw new Exception('Invalid template.');
+	throw new \Exception('Invalid template.');
 }
 
 $template['file']	= $_GET['xhprof']['template'];
@@ -54,7 +56,7 @@ if(!empty($_POST['ay']['query']))
 		}
 		else
 		{
-			ay_redirect(AY_REDIRECT_REFERRER, 'Sorry, this feature is currently not implemented.');
+			ay_redirect(\AY\REDIRECT_REFERRER, 'Sorry, this feature is currently not implemented.');
 		
 			$template	= 'requests';
 		}
@@ -62,7 +64,7 @@ if(!empty($_POST['ay']['query']))
 		unset($ids);
 	}
 	
-	ay_redirect(xhprof_url($template, $query));
+	\ay\redirect(url($template, $query));
 }
 
 // $_GET['xhprof']['query'] is used throughout the code to filter data. NULL value will be ignored.
@@ -77,40 +79,40 @@ else
 	{
 		if(is_array($e))
 		{
-			throw new Exception('Defining a filter with a multidimensional array is not supported.');
+			throw new \Exception('Defining a filter with a multidimensional array is not supported.');
 		}
 	}
 	
 	// ay_input() will look for the default input value in this globally accessible variable.
 	$input	= array('query' => $_GET['xhprof']['query']);
 
-	if(!empty($_GET['xhprof']['query']['datetime_from']) && !xhprof_validate_datetime($_GET['xhprof']['query']['datetime_from']))
+	if(!empty($_GET['xhprof']['query']['datetime_from']) && !validate_datetime($_GET['xhprof']['query']['datetime_from']))
 	{
-		ay_message('Invalid <mark>from</mark> date-time format.');
+		\ay\message('Invalid <mark>from</mark> date-time format.');
 	}
 	
-	if(!empty($_GET['xhprof']['query']['datetime_to']) && !xhprof_validate_datetime($_GET['xhprof']['query']['datetime_to']))
+	if(!empty($_GET['xhprof']['query']['datetime_to']) && !validate_datetime($_GET['xhprof']['query']['datetime_to']))
 	{
-		ay_message('Invalid <mark>to</mark> date-time format.');
+		\ay\message('Invalid <mark>to</mark> date-time format.');
 	}
 	
 	if(isset($_GET['xhprof']['query']['host'], $_GET['xhprof']['query']['host_id']))
 	{
-		ay_message('<mark>host_id</mark> will overwrite <mark>host</mark>. Unset either to prevent unexpected results.');
+		\ay\message('<mark>host_id</mark> will overwrite <mark>host</mark>. Unset either to prevent unexpected results.');
 	}
 	
 	if(isset($_GET['xhprof']['query']['uri'], $_GET['xhprof']['query']['uri_id']))
 	{
-		ay_message('<mark>uri_id</mark> will overwrite <mark>uri</mark>. Unset either to prevent unexpected results.');
+		\ay\message('<mark>uri_id</mark> will overwrite <mark>uri</mark>. Unset either to prevent unexpected results.');
 	}
 }
 
-$xhprof_data_obj	= new XHProfData($config['pdo']);
+$xhprof_data_obj	= new Data($config['pdo']);
 
 ob_start();
-require AY_ROOT . '/ay/templates/' . $template['file'] . '.tpl.php';
+require BASE_PATH . '/templates/' . $template['file'] . '.tpl.php';
 $template['body']	= ob_get_clean();
 
-require AY_ROOT . '/ay/templates/frontend.layout.tpl.php';
+require BASE_PATH . '/templates/frontend.layout.tpl.php';
 
 unset($_SESSION['ay']['flash']);

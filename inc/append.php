@@ -5,16 +5,22 @@ if(php_sapi_name() == 'cli')
 	return;
 }
 
-$xhprof_data	= xhprof_disable();
+register_shutdown_function(function(){
+	// by registering register_shutdown_function at the end of the file
+	// I make sure that all excution data, including that of the earlier
+	// registered register_shutdown_function, is collected.
 
-if(function_exists('fastcgi_finish_request'))
-{
-	fastcgi_finish_request();
-}
+	$xhprof_data	= xhprof_disable();
 
-$config			= require __DIR__ . '/../ay/includes/config.inc.php';
-
-require_once __DIR__ . '/../ay/classes/xhprof.data.class.php';
-
-$xhprof_data_obj	= new XHProf\Data($config['pdo']);
-$xhprof_data_obj->save($xhprof_data);
+	if(function_exists('fastcgi_finish_request'))
+	{
+		fastcgi_finish_request();
+	}
+	
+	$config			= require __DIR__ . '/../xhprof/includes/config.inc.php';
+	
+	require_once __DIR__ . '/../xhprof/classes/xhprof.data.class.php';
+	
+	$xhprof_data_obj	= new XHProf\Data($config['pdo']);
+	$xhprof_data_obj->save($xhprof_data);
+});

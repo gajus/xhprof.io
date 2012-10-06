@@ -1,5 +1,5 @@
 <?php
-namespace xhprof;
+namespace ay\xhprof;
 
 function url($template = NULL, array $xhprof_query = NULL, array $xhprof = array())
 {
@@ -152,11 +152,11 @@ function format_metrics(array $data)
 	(
 		'request_count'	=> '\number_format',
 		
-		'ct'			=> 'xhprof\format_number',
-		'wt'			=> 'xhprof\format_microseconds',
-		'cpu'			=> 'xhprof\format_microseconds',
-		'mu'			=> 'xhprof\format_bytes',
-		'pmu'			=> 'xhprof\format_bytes'
+		'ct'			=> 'ay\xhprof\format_number',
+		'wt'			=> 'ay\xhprof\format_microseconds',
+		'cpu'			=> 'ay\xhprof\format_microseconds',
+		'mu'			=> 'ay\xhprof\format_bytes',
+		'pmu'			=> 'ay\xhprof\format_bytes'
 	);
 	
 	foreach($data as $k => $v)

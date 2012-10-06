@@ -1,5 +1,5 @@
 <?php
-namespace xhprof;
+namespace ay\xhprof;
 
 class Model
 {

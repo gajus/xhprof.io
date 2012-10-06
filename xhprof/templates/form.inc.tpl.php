@@ -1,5 +1,5 @@
 <?php
-namespace xhprof;
+namespace ay\xhprof;
 ?>
 <form action="" method="post">
 	<div class="columns">

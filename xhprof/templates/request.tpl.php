@@ -1,5 +1,5 @@
 <?php
-namespace xhprof;
+namespace ay\xhprof;
 
 if(empty($_GET['xhprof']['query']['request_id']))
 {

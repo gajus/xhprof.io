@@ -1,5 +1,5 @@
 <?php
-namespace xhprof;
+namespace ay\xhprof;
 
 $config['pdo']->exec("SET `profiling` = 1;");
 // keep track of as many as possible queries (the maximum value is 100)

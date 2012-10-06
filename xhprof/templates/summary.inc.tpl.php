@@ -1,14 +1,14 @@
 <?php
-namespace xhprof;
+namespace ay\xhprof;
 
 $aggregated_metrics	= $xhprof_data_obj->getMetricsSummary();
 
 $labels		= array
 (
-	'wt'	=> array('label' => 'Wall Time', 'format' => 'xhprof\format_microseconds'),
-	'cpu'	=> array('label' => 'CPU Time', 'format' => 'xhprof\format_microseconds'),
-	'mu'	=> array('label' => 'Memory Usage', 'format' => 'xhprof\format_bytes'),
-	'pmu'	=> array('label' => 'Peak Memory Usage', 'format' => 'xhprof\format_bytes'),
+	'wt'	=> array('label' => 'Wall Time', 'format' => 'ay\xhprof\format_microseconds'),
+	'cpu'	=> array('label' => 'CPU Time', 'format' => 'ay\xhprof\format_microseconds'),
+	'mu'	=> array('label' => 'Memory Usage', 'format' => 'ay\xhprof\format_bytes'),
+	'pmu'	=> array('label' => 'Peak Memory Usage', 'format' => 'ay\xhprof\format_bytes'),
 );
 ?>
 

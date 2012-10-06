@@ -1,5 +1,5 @@
 <?php
-namespace xhprof;
+namespace ay\xhprof;
 
 session_start();
 
@@ -44,10 +44,10 @@ if(!isset($config['base_url'], $config['pdo']))
 define('BASE_URL', $config['base_url']);
 
 // This class is likely already included by php.ini prepend/append settings
-require_once BASE_PATH . '/classes/xhprof.data.class.php';
+require_once BASE_PATH . '/classes/data.php';
 
-require BASE_PATH . '/classes/xhprof.model.class.php';
-require BASE_PATH . '/classes/xhprof.callgraph.class.php';
+require BASE_PATH . '/classes/model.php';
+require BASE_PATH . '/classes/callgraph.php';
 
 if(\AY\DEBUG && !empty($_SESSION['ay']['profiling']))
 {

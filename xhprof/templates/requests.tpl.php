@@ -18,8 +18,6 @@ if(empty($data['discrete']))
 	return;
 }
 
-$data['aggregated']	= format_metrics($data['aggregated']);
-
 require __DIR__ . '/summary.inc.tpl.php';
 
 require __DIR__ . '/histogram.inc.tpl.php';
@@ -60,15 +58,5 @@ require __DIR__ . '/histogram.inc.tpl.php';
 			</tr>
 			<?php endforeach;?>
 		</tbody>
-		<tfoot>
-			<tr>
-				<td colspan="4"></td>
-				<td class="metrics"><?=$data['aggregated']['wt']['formatted']?></td>
-				<td class="metrics"><?=$data['aggregated']['cpu']['formatted']?></td>
-				<td class="metrics"><?=$data['aggregated']['mu']['formatted']?></td>
-				<td class="metrics"><?=$data['aggregated']['pmu']['formatted']?></td>
-				<td></td>
-			</tr>
-		</tfoot>
 	</table>
 </div>

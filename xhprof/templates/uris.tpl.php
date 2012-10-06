@@ -18,8 +18,6 @@ if(empty($data['discrete']))
 	return;
 }
 
-$data['aggregated']	= format_metrics($data['aggregated']);
-
 require __DIR__ . '/summary.inc.tpl.php';
 ?>
 <div class="table-wrapper">
@@ -57,19 +55,5 @@ require __DIR__ . '/summary.inc.tpl.php';
 			</tr>
 			<?php endforeach;?>
 		</tbody>
-		<tfoot>
-			<tr>
-				<td colspan="2">
-					<?php if(!empty($template['filters'])):?>
-					<a href="<?=url('uri', $template['filters'])?>">View requests [with filters]</a>
-					<?php endif;?>
-				</td>
-				<td class="metrics"><?=$data['aggregated']['request_count']['formatted']?></td>
-				<td class="metrics"><?=$data['aggregated']['wt']['formatted']?></td>
-				<td class="metrics"><?=$data['aggregated']['cpu']['formatted']?></td>
-				<td class="metrics"><?=$data['aggregated']['mu']['formatted']?></td>
-				<td class="metrics"><?=$data['aggregated']['pmu']['formatted']?></td>
-			</tr>
-		</tfoot>
 	</table>
 </div>

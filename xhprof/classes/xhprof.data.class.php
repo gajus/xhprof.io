@@ -291,8 +291,6 @@ class Data
 				`host`;
 		")->fetchAll(\PDO::FETCH_ASSOC);
 		
-		$data['aggregated']	= $this->getAggregatedMetrics();
-		
 		return $data;
 	}
 	
@@ -323,8 +321,6 @@ class Data
 				`host`;
 		")->fetchAll(\PDO::FETCH_ASSOC);
 		
-		$data['aggregated']	= $this->getAggregatedMetrics();
-		
 		return $data;
 	}
 	
@@ -336,23 +332,7 @@ class Data
 		
 		$data['discrete']	= $this->db->query("SELECT * FROM `temporary_request_data`;")->fetchAll(\PDO::FETCH_ASSOC);
 		
-		$data['aggregated']	= $this->getAggregatedMetrics();
-		
 		return $data;
-	}
-	
-	private function getAggregatedMetrics()
-	{
-		return $this->db->query("
-			SELECT
-				COUNT(`request_id`) `request_count`,
-				AVG(`wt`) `wt`,
-				AVG(`cpu`) `cpu`,
-				AVG(`mu`) `mu`,
-				AVG(`pmu`) `pmu`
-			FROM
-				`temporary_request_data`;
-		")->fetch(\PDO::FETCH_ASSOC);
 	}
 	
 	public function getMetricsSummary()

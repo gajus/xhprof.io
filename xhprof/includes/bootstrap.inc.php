@@ -18,7 +18,7 @@ define('BASE_PATH', realpath(__DIR__ . '/..'));
 
 // These constants are required to maintain
 // compatability with the "ay" framework components.
-define('ay\DEBUG', $_SESSION['ay']['debug']);
+define('ay\DEBUG', !empty($_SESSION['ay']['debug']));
 
 define('ay\MESSAGE_NOTICE', 1);
 define('ay\MESSAGE_SUCCESS', 2);

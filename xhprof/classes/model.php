@@ -34,29 +34,35 @@ class Model
 	 * @param	array	$whilelist Function IDs to include to the metrics. This will also include the parents and children of the whitelisted functions.
 	 *
 	 * @author	Gajus Kuizinas <g.kuizinas@anuary.com>
-	 */
+	 */	
 	private function computeInclusiveMetrics()
 	{
 		$functions	= array();
 		
 		foreach($this->request['callstack'] as $call)
 		{
+			$caller	= $call['caller_id'];
+			
+			unset($call['caller_id'], $call['caller']);
+			
 			if(!isset($functions[$call['callee_id']]))
 			{
-				$functions[$call['callee_id']]		= $call;
+				$call['callers']				= array($caller);
 			
+				$functions[$call['callee_id']]	= $call;
+				
 				continue;
 			}
 			
-			foreach($functions[$call['callee_id']]['metrics'] as $k => &$v)
-			{
-				$v	+= $call['metrics'][$k];
+			$functions[$call['callee_id']]['callers'][]	= $caller;
 			
-				unset($v);
+			foreach($call['metrics'] as $k => $v)
+			{
+				$functions[$call['callee_id']]['metrics'][$k]	+= $v;
 			}
 		}
-		
-		return $functions;
+			
+		return array_values($functions);
 	}
 	
 	/**
@@ -66,45 +72,82 @@ class Model
 	 * @author	Gajus Kuizinas <g.kuizinas@anuary.com>
 	 * @param	int	$function_id	Defines the "current function." This will limit the output to parent function, current function ($function_id) and any direct children.
 	 */
-	public function getAggregatedStack($function_id = NULL)
+	public function getAggregatedStack()
 	{
 		$functions	= $this->computeInclusiveMetrics();
 		
-		// Format array to carry exclusive metrics and a copy of the inclusive metrics.
-		foreach($functions as &$f)
+		foreach($functions as &$function)
 		{
-			$f['metrics']	= array
+			$function['metrics']	= array
 			(
-				'ct'		=> $f['metrics']['ct'],
-				'inclusive'	=> $f['metrics'],
-				'exclusive'	=> $f['metrics']
+				'ct'		=> $function['metrics']['ct'],
+				'inclusive'	=> $function['metrics'],
+				'exclusive'	=> $function['metrics']
 			);
 			
-			unset($f['metrics']['inclusive']['ct'], $f['metrics']['exclusive']['ct'], $f);
-		}
-		
-		#ay($this->request['callstack']);
-		
-		// Find all the function parents and deduct their resource usage from the child.
-		foreach($this->request['callstack'] as $call)
-		{
-			if(empty($call['caller_id']))
+			unset($function['metrics']['inclusive']['ct'], $function['metrics']['exclusive']['ct']);
+			
+			foreach($this->request['callstack'] as $call)
 			{
-				continue;
+				if($function['callee_id'] == $call['caller_id'])
+				{
+					foreach(['wt', 'cpu', 'mu', 'pmu'] as $k)
+					{
+						$function['metrics']['exclusive'][$k]	-= $call['metrics'][$k];
+					}
+				}
 			}
 			
-			foreach(['wt', 'cpu', 'mu', 'pmu'] as $v)
+			unset($function);
+		}
+		
+		return $functions;
+	}
+	
+	/**
+	 * @return	array	Aggregated metrics for the $callee_id, callers and children.
+	 */
+	public function getFamily($callee_id)
+	{	
+		$aggregated_stack	= $this->getAggregatedStack();
+		
+		foreach($aggregated_stack as $call)
+		{
+			if($call['callee_id'] == $callee_id)
 			{
-				$functions[$call['caller_id']]['metrics']['exclusive'][$v]	-= $call['metrics'][$v];
+				$callee	= $call;
+				
+				break;
 			}
 		}
 		
-		if($function_id !== NULL)
+		if(!isset($callee))
 		{
-			$functions	= array_filter($functions, function($e) use ($function_id) { return $e['caller_id'] == $function_id || $e['callee_id'] == $function_id; });
+			return FALSE;
 		}
 		
-		return array_values($functions);
+		// find callers & children
+		$callers			= array();
+		$children			= array();
+		
+		foreach($aggregated_stack as $function)
+		{
+			if(in_array($function['callee_id'], $callee['callers']))
+			{
+				$callers[]	= $function;
+			}
+			else if(in_array($callee['callee_id'], $function['callers']))
+			{
+				$children[]	= $function;
+			}
+		}
+		
+		return array
+		(
+			'callers'	=> $callers,
+			'callee'	=> $callee,
+			'children'	=> $children
+		);
 	}
 	
 	public function assignUID()

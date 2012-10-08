@@ -129,7 +129,7 @@ class Data
 			throw new DataException('XHProf.io cannot function in a server environment that does not define REQUEST_METHOD, HTTP_HOST or REQUEST_URI.');
 		}
 		
-		$sth->prepare("
+		$sth	= $this->db->prepare("
 			(SELECT 'method_id', `id` FROM `request_methods` WHERE `method` = :method LIMIT 1)
 			UNION ALL
 			(SELECT 'host_id', `id` FROM `request_hosts` WHERE `host` = :host LIMIT 1)
@@ -138,8 +138,8 @@ class Data
 		
 		$sth->execute(array('method' => $_SERVER['REQUEST_METHOD'], 'host' => $_SERVER['HTTP_HOST'], 'uri' => $_SERVER['REQUEST_URI']));
 		
-		$request	= $sth->fetchAll(PDO::FETCH_KEY_PAIR);
-		
+		$request	= $sth->fetchAll(\PDO::FETCH_KEY_PAIR);
+
 		if(!isset($request['method_id']))
 		{
 			$this->db

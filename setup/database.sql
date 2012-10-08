@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.5.28)
 # Database: 2012 09 16 xhprof
-# Generation Time: 2012-10-04 15:08:13 +0000
+# Generation Time: 2012-10-08 11:21:52 +0000
 # ************************************************************
 
 
@@ -49,7 +49,7 @@ DROP TABLE IF EXISTS `players`;
 
 CREATE TABLE `players` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) DEFAULT '',
+  `name` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -79,7 +79,8 @@ DROP TABLE IF EXISTS `request_hosts`;
 CREATE TABLE `request_hosts` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `host` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `host` (`host`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -91,9 +92,9 @@ DROP TABLE IF EXISTS `request_methods`;
 
 CREATE TABLE `request_methods` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `method` varchar(10) DEFAULT NULL,
+  `method` varchar(10) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`method`)
+  UNIQUE KEY `method` (`method`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -107,6 +108,7 @@ CREATE TABLE `request_uris` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uri` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `uri` (`uri`),
   KEY `id` (`id`,`uri`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -130,9 +132,9 @@ CREATE TABLE `requests` (
   KEY `request_method_id` (`request_method_id`),
   KEY `request_timestamp` (`request_timestamp`),
   KEY `request_uri_id` (`request_uri_id`,`request_caller_id`),
-  CONSTRAINT `requests_ibfk_5` FOREIGN KEY (`request_uri_id`) REFERENCES `request_uris` (`id`) ON DELETE CASCADE,
   CONSTRAINT `requests_ibfk_3` FOREIGN KEY (`request_method_id`) REFERENCES `request_methods` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `requests_ibfk_4` FOREIGN KEY (`request_host_id`) REFERENCES `request_hosts` (`id`) ON DELETE CASCADE
+  CONSTRAINT `requests_ibfk_4` FOREIGN KEY (`request_host_id`) REFERENCES `request_hosts` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `requests_ibfk_5` FOREIGN KEY (`request_uri_id`) REFERENCES `request_uris` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

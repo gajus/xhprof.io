@@ -360,10 +360,10 @@ class Data
 		$return	= array
 		(
 			'request_count'	=> $data[0],
-			'wt'			=> array_combine(['min', 'max', 'avg'], array_slice($data, 1, 3)),
-			'cpu'			=> array_combine(['min', 'max', 'avg'], array_slice($data, 4, 3)),
-			'mu'			=> array_combine(['min', 'max', 'avg'], array_slice($data, 7, 3)),
-			'pmu'			=> array_combine(['min', 'max', 'avg'], array_slice($data, 10, 3))
+			'wt'			=> array_combine(array('min', 'max', 'avg'), array_slice($data, 1, 3)),
+			'cpu'			=> array_combine(array('min', 'max', 'avg'), array_slice($data, 4, 3)),
+			'mu'			=> array_combine(array('min', 'max', 'avg'), array_slice($data, 7, 3)),
+			'pmu'			=> array_combine(array('min', 'max', 'avg'), array_slice($data, 10, 3))
 		);
 		
 		// I've tried so much more sophisticated approaches to calculate the Nth percentile,

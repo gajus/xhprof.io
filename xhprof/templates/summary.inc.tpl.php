@@ -12,7 +12,7 @@ $labels		= array
 );
 ?>
 
-<div class="table-wrapper">
+<div class="table-wrapper" id="metrics-summary">
 	<table class="metrics-summary">
 		<thead>
 			<tr>

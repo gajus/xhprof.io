@@ -1,4 +1,16 @@
 $(function(){
+	$('#navigation .button-filter').on('click', function(){
+		$(this).remove();
+		
+		$('#filter').show();
+	});
+	
+	$('#navigation .button-summary').on('click', function(){
+		$(this).remove();
+		
+		$('#metrics-summary').show();
+	});
+
 	$('table.ay-sort').ayTableSort();
 	$('thead.ay-sticky').ayTableSticky();
 	

@@ -8,7 +8,10 @@ $navigation	= array
 	array('url' => url('requests'), 'name' => 'Requests', 'class' => $template['file'] == 'requests' || $template['file'] == 'request' ? 'template active' : 'template')
 );
 ?>
-<div class="navigation">
+<div id="navigation">
+	<div class="button-filter">Filter</div>
+	<div class="button-summary">Summary</div>
+
 <?php foreach($navigation as $e):?>
 	<a href="<?=$e['url']?>"<?php if(!empty($e['class'])):?> class="<?=$e['class']?>"<?php endif;?>><?=$e['name']?></a>
 <?php endforeach;?>

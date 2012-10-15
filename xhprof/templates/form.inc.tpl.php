@@ -1,7 +1,7 @@
 <?php
 namespace ay\xhprof;
 ?>
-<form action="" method="post">
+<form action="" method="post" id="filter">
 	<div class="columns">
 		<?php if($template['file'] != 'request'):?>
 			<div class="column">

@@ -3,44 +3,128 @@ html {
   margin: 0;
   font: normal 12px/20px 'Lucida Grande', Arial, Sans-Serif;
 }
-body > .navigation {
+#footer {
+  margin: 20px;
+}
+#navigation {
   overflow: hidden;
   background: #4d7bd6;
   border-bottom: 1px solid #2d53af;
   padding-left: 20px;
 }
-body > .navigation a {
+#navigation > a,
+#navigation > div {
   text-decoration: none;
   float: left;
   padding: 0 20px;
   line-height: 35px;
   color: #fff;
   border-left: 1px solid #6090dd;
+  cursor: pointer;
 }
-body > .navigation a:hover {
+#navigation > a:hover,
+#navigation > div:hover {
   background: #6090dd;
 }
-body > .navigation a.active {
+#navigation > a.active,
+#navigation > div.active {
   background: #6090dd;
 }
-body > .navigation a.callgraph {
+#navigation > a.callgraph,
+#navigation > div.callgraph {
   background: #fff;
   color: #111;
 }
-body > .filters {
+#navigation > a.button-summary,
+#navigation > div.button-summary,
+#navigation > a.button-filter,
+#navigation > div.button-filter {
+  background: #2d53af;
+  color: #fff;
+}
+#filter {
+  margin: 20px;
+  display: none;
+}
+#filter .columns {
+  overflow: hidden;
+}
+#filter .columns .column {
+  overflow: hidden;
+  width: 500px;
+  min-height: 56px;
+  float: left;
+  margin: 0 20px 20px 0;
+}
+#filter label {
+  margin-bottom: 5px;
+  display: block;
+  overflow: hidden;
+}
+#filter label.input-text input {
+  border: 1px solid #C1C1C1;
+  border-top-color: #939393;
+  border-bottom-color: #E1E1E1;
+  font-size: 12px;
+  color: #111;
+  padding: 2px;
+  outline: none;
+  background: #FFF;
+  padding: 5px;
+  margin: 0;
+  width: 290px;
+}
+#filter label div.label {
+  float: left;
+  width: 200px;
+  cursor: pointer;
+  line-height: 27px;
+  margin-right: 10px;
+  font-weight: bold;
+}
+#filter div.comment {
+  color: #666;
+  line-height: 20px;
+}
+#filter div.buttons {
+  height: 27px;
+}
+#filter div.buttons input {
+  border: 1px solid #C7C7C7;
+  border-bottom-color: #999;
+  color: #111;
+  border-radius: 2px;
+  float: left;
+  margin: 0;
+  padding: 6px 10px;
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fafafa), to(#dadada));
+  cursor: pointer;
+}
+#filter div.buttons input:hover {
+  border-color: #999;
+}
+#filter div.buttons a {
+  margin-left: 10px;
+  float: left;
+  line-height: 27px;
+}
+#metrics-summary {
+  display: none;
+}
+.filters {
   background: #ffffd6;
   border: 1px solid #d8aa00;
   margin: 20px;
   padding: 10px;
 }
-body > .filters p {
+.filters p {
   margin: 0;
 }
-body > .filters dl {
+.filters dl {
   margin: 5px 0 0 0;
   overflow: hidden;
 }
-body > .filters dt {
+.filters dt {
   float: left;
   margin: 0;
   font-weight: bold;
@@ -48,13 +132,10 @@ body > .filters dt {
   padding: 2px 5px;
   clear: both;
 }
-body > .filters dd {
+.filters dd {
   margin: 0 0 0 111px;
   font-family: monospace;
   padding: 2px 5px;
-}
-body > .footer {
-  margin: 20px;
 }
 .multidimensional-filter {
   overflow: hidden;
@@ -252,71 +333,6 @@ code {
 }
 mark {
   background: #FFC;
-}
-form {
-  margin: 20px;
-}
-form .columns {
-  overflow: hidden;
-}
-form .columns .column {
-  overflow: hidden;
-  width: 500px;
-  min-height: 56px;
-  float: left;
-  margin: 0 20px 20px 0;
-}
-form label {
-  margin-bottom: 5px;
-  display: block;
-  overflow: hidden;
-}
-form label.input-text input {
-  border: 1px solid #C1C1C1;
-  border-top-color: #939393;
-  border-bottom-color: #E1E1E1;
-  font-size: 12px;
-  color: #111;
-  padding: 2px;
-  outline: none;
-  background: #FFF;
-  padding: 5px;
-  margin: 0;
-  width: 290px;
-}
-form label div.label {
-  float: left;
-  width: 200px;
-  cursor: pointer;
-  line-height: 27px;
-  margin-right: 10px;
-  font-weight: bold;
-}
-form div.comment {
-  color: #666;
-  line-height: 20px;
-}
-form div.buttons {
-  height: 27px;
-}
-form div.buttons input {
-  border: 1px solid #C7C7C7;
-  border-bottom-color: #999;
-  color: #111;
-  border-radius: 2px;
-  float: left;
-  margin: 0;
-  padding: 6px 10px;
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fafafa), to(#dadada));
-  cursor: pointer;
-}
-form div.buttons input:hover {
-  border-color: #999;
-}
-form div.buttons a {
-  margin-left: 10px;
-  float: left;
-  line-height: 27px;
 }
 /* without this tables don't behave nicely full width + margin */
 .table-wrapper {

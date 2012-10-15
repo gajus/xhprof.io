@@ -1,31 +1,95 @@
 body, html { margin: 0; font: normal 12px/20px 'Lucida Grande', Arial, Sans-Serif; }
 
-body
+#footer { margin: 20px; }
+
+#navigation
 {
-	> .navigation
+	overflow: hidden; background: #4d7bd6; border-bottom: 1px solid #2d53af; padding-left: 20px;
+	
+	> a,
+	> div
 	{
-		overflow: hidden; background: #4d7bd6; border-bottom: 1px solid #2d53af; padding-left: 20px;
+		text-decoration: none; float: left; padding: 0 20px; line-height: 35px; color: #fff; border-left: 1px solid #6090dd; cursor: pointer;
 		
-		a { text-decoration: none; float: left; padding: 0 20px; line-height: 35px; color: #fff; border-left: 1px solid #6090dd; }
-		a:hover { background: #6090dd; }
+		&:hover { background: #6090dd; }
+
+		&.active { background: #6090dd; }
 		
-		a.active { background: #6090dd; }
+		&.callgraph { background: #fff; color: #111; }
 		
-		a.callgraph { background: #fff; color: #111; }
+		&.button-summary,
+		&.button-filter { background: #2d53af; color: #fff; }
+	}
+}
+
+#filter
+{
+	margin: 20px; display: none;
+	
+	.columns
+	{
+		overflow: hidden;
+		
+		.column
+		{
+			overflow: hidden; width: 500px; min-height: 56px; float: left; margin: 0 20px 20px 0;
+		}
 	}
 	
-	> .filters
+	label
 	{
-		background: #ffffd6; border: 1px solid #d8aa00; margin: 20px; padding: 10px;
+		margin-bottom: 5px; display: block; overflow: hidden;
 		
-		p { margin: 0; }
+		&.input-text input
+		{
+			border: 1px solid #C1C1C1;
+			border-top-color: #939393;
+			border-bottom-color: #E1E1E1;
+			
+			font-size: 12px;
+			color: #111;
+			padding: 2px;
+			outline: none;
+			background: #FFF;
+			padding: 5px;
+			margin: 0;
+			width: 290px;
+		}
 		
-		dl { margin: 5px 0 0 0; overflow: hidden; }
-		dt { float: left; margin: 0; font-weight: bold; width: 120px; padding: 2px 5px; clear: both; }
-		dd { margin: 0 0 0 111px; font-family: monospace; padding: 2px 5px; }		
+		div.label { float: left; width: 200px; cursor: pointer; line-height: 27px; margin-right: 10px; font-weight: bold; }
 	}
 	
-	> .footer { margin: 20px; }
+	div.comment { color: #666; line-height: 20px; }
+	
+	div.buttons
+	{
+		height: 27px;
+		
+		input
+		{
+			border: 1px solid #C7C7C7; border-bottom-color: #999; color: #111; border-radius: 2px; float: left; margin: 0; padding: 6px 10px; background-image: -webkit-gradient(linear,0 0,0 100%,from(#FAFAFA),to(#DADADA)); cursor: pointer;
+			
+			&:hover { border-color: #999; }
+		}
+		
+		a { margin-left: 10px; float: left; line-height: 27px; }
+	}
+}
+
+#metrics-summary
+{
+	display: none;
+}
+
+.filters
+{
+	background: #ffffd6; border: 1px solid #d8aa00; margin: 20px; padding: 10px;
+	
+	p { margin: 0; }
+	
+	dl { margin: 5px 0 0 0; overflow: hidden; }
+	dt { float: left; margin: 0; font-weight: bold; width: 120px; padding: 2px 5px; clear: both; }
+	dd { margin: 0 0 0 111px; font-family: monospace; padding: 2px 5px; }		
 }
 
 .multidimensional-filter
@@ -138,60 +202,6 @@ code { background: #eee; color: #000; padding: 2px 4px; font-family: monospace; 
 
 mark { background: #FFC; }
 
-form
-{
-	margin: 20px;
-	
-	.columns
-	{
-		overflow: hidden;
-		
-		.column
-		{
-			overflow: hidden; width: 500px; min-height: 56px; float: left; margin: 0 20px 20px 0;
-		}
-	}
-	
-	label
-	{
-		margin-bottom: 5px; display: block; overflow: hidden;
-		
-		&.input-text input
-		{
-			border: 1px solid #C1C1C1;
-			border-top-color: #939393;
-			border-bottom-color: #E1E1E1;
-			
-			font-size: 12px;
-			color: #111;
-			padding: 2px;
-			outline: none;
-			background: #FFF;
-			padding: 5px;
-			margin: 0;
-			width: 290px;
-		}
-		
-		div.label { float: left; width: 200px; cursor: pointer; line-height: 27px; margin-right: 10px; font-weight: bold; }
-	}
-	
-	div.comment { color: #666; line-height: 20px; }
-	
-	div.buttons
-	{
-		height: 27px;
-		
-		input
-		{
-			border: 1px solid #C7C7C7; border-bottom-color: #999; color: #111; border-radius: 2px; float: left; margin: 0; padding: 6px 10px; background-image: -webkit-gradient(linear,0 0,0 100%,from(#FAFAFA),to(#DADADA)); cursor: pointer;
-			
-			&:hover { border-color: #999; }
-		}
-		
-		a { margin-left: 10px; float: left; line-height: 27px; }
-	}
-}
-
 /* without this tables don't behave nicely full width + margin */
 .table-wrapper { margin: 20px; }
 
@@ -240,7 +250,7 @@ table
 	}
 	
 	&.metrics-summary
-	{
+	{	
 		th.name { width: 200px; }
 		
 		tbody

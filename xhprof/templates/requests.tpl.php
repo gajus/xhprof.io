@@ -26,12 +26,12 @@ require __DIR__ . '/histogram.inc.tpl.php';
 	<table class="requests ay-sort">
 		<thead class="ay-sticky">
 			<tr>
-				<th class="ay-sort request-id" rowspan="2">Request ID</th>
+				<th class="ay-sort ay-sort-desc request-id" rowspan="2">Request ID</th>
 				<th class="ay-sort host" rowspan="2">Host</th>
 				<th class="ay-sort" rowspan="2">URI</th>
 				<th class="ay-sort request-method" rowspan="2">Request Method</th>
 				<th class="heading" colspan="4">Metrics</th>
-				<th class="ay-sort ay-sort-desc date-time" rowspan="2" data-ay-sort-index="8">Request Time</th>
+				<th class="ay-sort date-time" rowspan="2" data-ay-sort-index="8">Request Time</th>
 			</tr>
 			<tr>
 				

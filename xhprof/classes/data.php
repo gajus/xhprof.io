@@ -504,7 +504,7 @@ class Data
 			WHERE
 				1=1 {$sql_query['where']}
 			ORDER BY
-				`r1`.`request_timestamp` DESC
+				`r1`.`id` DESC
 			LIMIT :dataset_size
 		);
 		");

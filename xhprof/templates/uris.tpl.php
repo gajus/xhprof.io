@@ -7,7 +7,7 @@ if(!\ay\error_present())
 	
 	if(empty($data))
 	{
-		message('No results matching your search were found.', AY_MESSAGE_NOTICE);
+		\ay\message('No results matching your search were found.', AY_MESSAGE_NOTICE);
 	}
 }
 

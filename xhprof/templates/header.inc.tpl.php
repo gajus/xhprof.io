@@ -50,9 +50,14 @@ $labels	= array
 			throw new \Exception('Filter label is not defined.');
 		}
 		
+		if($k == 'request_id'):
 	?>
 		<dt><?=$labels[$k]?></dt>
+		<dd><a href="<?=url('request', array('request_id' => $v))?>"><?=htmlspecialchars($v)?></a></dd>
+		<?php else:?>
+		<dt><?=$labels[$k]?></dt>
 		<dd><?=htmlspecialchars($v)?></dd>
+		<?php endif;?>
 	<?php endforeach;?>
 	</dl>
 </div>

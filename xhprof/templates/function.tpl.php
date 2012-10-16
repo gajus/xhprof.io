@@ -17,6 +17,10 @@ $xhprof_obj			= new Model($request);
 
 $aggregated_family	= $xhprof_obj->getFamily($_GET['xhprof']['query']['callee_id']);
 
+if(!$aggregated_family)
+{
+	throw new \Exception('Function is not in the callstack.');
+}
 
 $table_row			= function($e) use ($request)
 {
@@ -55,6 +59,7 @@ $table_row			= function($e) use ($request)
 	</tr>
 	<?php
 };
+
 ?>
 <div class="table-wrapper">
 	<table class="function-breakdown ay-sort">

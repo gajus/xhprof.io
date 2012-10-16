@@ -10,7 +10,7 @@ $request			= $xhprof_data_obj->get($_GET['xhprof']['query']['request_id']);
 
 if(!$request)
 {
-	\ay\redirect(AY_REDIRECT_REFERRER, 'Request data not found.');
+	\ay\redirect(\ay\REDIRECT_REFERRER, 'Request data not found.');
 }
 
 $xhprof_obj			= new Model($request);
@@ -34,15 +34,15 @@ if(isset($_GET['xhprof']['query']['second_request_id']))
 
 	if(!$second_request)
 	{
-		\ay\redirect(\AY\REDIRECT_REFERRER, 'Second request data not found.');
+		\ay\redirect(\ay\REDIRECT_REFERRER, 'Second request data not found.');
 	}
 	else if(array_map(function($e){ return $e['callee_id']; }, $request['callstack']) !== array_map(function($e){ return $e['callee_id']; }, $second_request['callstack']))
 	{
-		\ay\redirect(\AY\REDIRECT_REFERRER, 'Cannot compare the two requests. The callstack does not match.');
+		\ay\redirect(\ay\REDIRECT_REFERRER, 'Cannot compare the two requests. The callstack does not match.');
 	}
 	else if($request == $second_request)
 	{
-		\ay\redirect(\AY\REDIRECT_REFERRER, 'Cannot compare the request to itself.');
+		\ay\redirect(\ay\REDIRECT_REFERRER, 'Cannot compare the request to itself.');
 	}
 	
 	$second_xhprof_obj			= new Model($second_request);

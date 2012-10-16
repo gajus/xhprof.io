@@ -20,6 +20,8 @@ define('BASE_PATH', realpath(__DIR__ . '/..'));
 // compatability with the "ay" framework components.
 define('ay\DEBUG', !empty($_SESSION['ay']['debug']));
 
+define('ay\REDIRECT_REFERRER', 1);
+
 define('ay\MESSAGE_NOTICE', 1);
 define('ay\MESSAGE_SUCCESS', 2);
 define('ay\MESSAGE_ERROR', 3);

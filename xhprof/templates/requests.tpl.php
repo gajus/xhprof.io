@@ -46,9 +46,9 @@ require __DIR__ . '/histogram.inc.tpl.php';
 				$e	= format_metrics($e);			
 			?>
 			<tr data-request-id="<?=$e['request_id']?>">
-				<td><a href="<?=url('request', array('request_id' => $e['request_id']))?>"><?=$e['request_id']?></a></td>
-				<td><a href="<?=url('uris', array('host_id' => $e['host_id']))?>"><?=htmlspecialchars($e['host'])?></a></td>
-				<td><a href="<?=url('uris', array('host_id' => $e['host_id'], 'uri_id' => $e['uri_id']))?>"><?=htmlspecialchars($e['uri'])?></a></td>
+				<td data-ay-sort-weight="<?=$e['request_id']?>"><a href="<?=url('request', array('request_id' => $e['request_id']))?>"><?=$e['request_id']?></a></td>
+				<td data-ay-sort-weight="<?=htmlspecialchars($e['host'])?>"><a href="<?=url('uris', array('host_id' => $e['host_id']))?>"><?=htmlspecialchars($e['host'])?></a></td>
+				<td data-ay-sort-weight="<?=htmlspecialchars($e['uri'])?>"><a href="<?=url('uris', array('host_id' => $e['host_id'], 'uri_id' => $e['uri_id']))?>"><?=htmlspecialchars($e['uri'])?></a></td>
 				<td><?=$e['request_method']?></td>
 				<td class="metrics" data-ay-sort-weight="<?=$e['wt']['raw']?>"><?=$e['wt']['formatted']?></td>
 				<td class="metrics" data-ay-sort-weight="<?=$e['cpu']['raw']?>"><?=$e['cpu']['formatted']?></td>

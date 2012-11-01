@@ -142,7 +142,7 @@ function redirect($url = REDIRECT_REFERRER, $message_text = NULL, $message_type 
 
 /**
  * @author Gajus Kuizinas <g.kuizinas@anuary.com>
- * @version 1.6.8 (2012 07 02)
+ * @version 1.6.7 (2012 11 01)
  */
 function input($name, $label, array $input_options = NULL, array $row_options = NULL, array $return_options = NULL)
 {
@@ -188,9 +188,9 @@ function input($name, $label, array $input_options = NULL, array $row_options = 
 	}
 	
 	// generate attribute string
-	$allowed_attributes			= ['name', 'id', 'class', 'maxlength', 'autocomplete'];
+	$allowed_attributes			= array('name', 'id', 'class', 'maxlength', 'autocomplete');
 	
-	if(in_array($input_options['type'], ['text', 'textarea']))
+	if(in_array($input_options['type'], array('text', 'textarea')))
 	{
 		$allowed_attributes[]	= 'placeholder';
 		$allowed_attributes[]	= 'readonly';
@@ -351,7 +351,7 @@ function error_exception_handler()
 	{
 		header('Content-Type: text/plain');
 		
-		http_response_code(500);
+		header((isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0') . ' 500 Internal Server Error');
 	}
 	
 	if(DEBUG)

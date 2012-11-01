@@ -91,7 +91,7 @@ class Model
 			{
 				if($function['callee_id'] == $call['caller_id'])
 				{
-					foreach(['wt', 'cpu', 'mu', 'pmu'] as $k)
+					foreach(array('wt', 'cpu', 'mu', 'pmu') as $k)
 					{
 						$function['metrics']['exclusive'][$k]	-= $call['metrics'][$k];
 					}
@@ -156,7 +156,7 @@ class Model
 	
 		foreach($callstack as &$c)
 		{
-			$c['parents']			= [];
+			$c['parents']			= array();
 			
 			unset($c);
 		}

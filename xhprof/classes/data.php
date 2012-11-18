@@ -9,6 +9,7 @@ class Data
 	{		
 		$db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, FALSE);
 		$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+		$db->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, FALSE);
 		
 		$this->db	= $db;
 	}
@@ -179,7 +180,6 @@ class Data
 		$request_id	= $this->db->lastInsertId();
 		
 		$sth1		= $this->db->prepare("INSERT INTO `calls` SET `request_id` = :request_id, `ct` = :ct, `wt` = :wt, `cpu` = :cpu, `mu` = :mu, `pmu` = :pmu, `caller_id` = :caller_id, `callee_id` = :callee_id;");
-		
 		$sth2		= $this->db->prepare("SELECT `id` FROM `players` WHERE `name` = :name LIMIT 1;");
 		$sth3		= $this->db->prepare("INSERT INTO `players` SET `name` = :name;");
 		
@@ -201,6 +201,8 @@ class Data
 			    
 			    $callee_id		= $sth2->fetch(\PDO::FETCH_COLUMN);
 			    
+			    $sth2->closeCursor();
+			    
 			    if(!$callee_id)
 			    {
 				    $sth3->execute(array('name' => $call[0]));
@@ -218,6 +220,8 @@ class Data
 			    
 			    $caller_id		= $sth2->fetch(\PDO::FETCH_COLUMN);
 			    
+			    $sth2->closeCursor();
+			    
 			    if(!$caller_id)
 			    {
 				    $sth3->execute(array('name' => $call[0]));
@@ -229,6 +233,8 @@ class Data
 				$sth2->execute(array('name' => $call[1]));
 			    
 			    $callee_id		= $sth2->fetch(\PDO::FETCH_COLUMN);
+			    
+			    $sth2->closeCursor();
 			    
 			    if(!$callee_id)
 			    {

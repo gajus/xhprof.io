@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.5.28)
 # Database: 2012 09 16 xhprof
-# Generation Time: 2012-10-08 11:21:52 +0000
+# Generation Time: 2012-11-30 14:19:44 +0000
 # ************************************************************
 
 
@@ -49,7 +49,7 @@ DROP TABLE IF EXISTS `players`;
 
 CREATE TABLE `players` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

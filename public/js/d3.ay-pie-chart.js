@@ -1,5 +1,5 @@
 /**
- * Pie Chart v0.0.4
+ * Pie Chart v0.0.5
  * https://github.com/gajus/pie-chart
  *
  * Licensed under the BSD.
@@ -19,19 +19,19 @@ var ay_pie_chart	= function(name, data, options, debug)
 	var radius_outer	= size/3;
 	var radius_inner	= 50;
 	
-	if(typeof options != 'undefined')
+	if(typeof options !== 'undefined')
 	{
-		if(options.radius_outer)
+		if(typeof options.radius_outer !== 'undefined')
 		{
 			radius_outer	= options.radius_outer;
 		}
 		
-		if(options.radius_inner)
+		if(typeof options.radius_inner !== 'undefined')
 		{
 			radius_inner	= options.radius_inner;
 		}
-	
-		if(options.label)
+		
+		if(typeof options.label !== 'undefined')
 		{
 			var label	= svg
 				.append('g')

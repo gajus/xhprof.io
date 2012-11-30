@@ -366,24 +366,22 @@ table
 
 .ay-message-placeholder
 {
-	margin: 20px;
+	overflow: hidden;
 
 	ul
 	{
-		padding: 10px; margin: 10px 0;
+		padding: 0; margin: 20px;
 		
-		> li
+		li
 		{
-			margin: 0!important; padding: 0!important; list-style: none;
-			
-			> .highlight { font-weight: bold; }
+			padding: 5px; margin-top: 5px; list-style: none;
+		
+			&.notice { background: #ffffd6; border: 1px solid #d8aa00; }
+			&.error { background: #FFEBE8; border: 1px solid #DD3C10; }
+			&.success { background: #dceddc; border: 1px solid #51a351; }
+			&.important { background: #f3f7fd; border: 1px solid #3a87ad; }
 		}
-		
-		&.notice { background: #ffffd6; border: 1px solid #d8aa00; }
-		&.error { background: #FFEBE8; border: 1px solid #DD3C10; }
-		&.success { background: #dceddc; border: 1px solid #51a351; }
-		&.important { background: #f3f7fd; border: 1px solid #3a87ad; }
-		
-		mark { color: #000; padding: 2px 3px; background: none; font-family: monospace; }
 	}
+	
+	mark { font-weight: bold; background: none; }
 }

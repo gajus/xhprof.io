@@ -43,16 +43,30 @@ function ay()
 
 /**
  * @author Gajus Kuizinas <g.kuizinas@anuary.com>
- * @version 1.3 (2012 08 16)
+ * @version 1.4 (2012 08 16)
  */
-function message($message, $type = MESSAGE_ERROR)
+function message($message, $type = 'error')
 {
-    $_SESSION['ay']['flash']['messages'][$type][]	= $message;
+	$messages_types	= ['error', 'important', 'notice', 'success'];
+	
+	if(!in_array($type, $messages_types))
+	{
+		throw new HelperException('Invalid message type.');
+	}
+	
+	$message		= ['type' => $type, 'message' => $message];
+	
+	if(!empty($_SESSION['ay']['flash']['messages']) && in_array($message, $_SESSION['ay']['flash']['messages']))
+	{
+		return FALSE;
+	}
+	
+    $_SESSION['ay']['flash']['messages'][]	= $message;
 }
 
 /**
  * @author Gajus Kuizinas <g.kuizinas@anuary.com>
- * @version 2.1
+ * @version 2.3.0 (2012 11 24)
  */
 function display_messages()
 {
@@ -63,52 +77,58 @@ function display_messages()
 		return;
 	}
 	
-	$already_displayed			= TRUE;
-	
-    $return						= '';
+	$already_displayed	= TRUE;
 
-    $messages_types				= array
-    (
-		MESSAGE_NOTICE		=> 'notice',
-		MESSAGE_SUCCESS		=> 'success',
-		MESSAGE_ERROR		=> 'error',
-		MESSAGE_IMPORTANT	=> 'important'
-	);
+    $messages_types		= ['error', 'important', 'notice', 'success'];
+	
+	$return	= '';
 	
     if(!empty($_SESSION['ay']['flash']['messages']))
     {
-    	ksort($_SESSION['ay']['flash']['messages']);
-		
-		foreach($_SESSION['ay']['flash']['messages'] as $type => $messages)
+    	foreach($_SESSION['ay']['flash']['messages'] as $m)
 		{
-			$return		.= '<ul class="' . $messages_types[$type] . '">';
-		
-			foreach($messages as $message)
+			if(empty($m['type']))
 			{
-				$return	.= '<li>' . $message . '</li>';
-			}
+				unset($_SESSION['ay']['flash']['messages']);
 			
-			$return		.= '</ul>';
+				throw new HelperException('Missing message type.');
+			}
+			else if(!in_array($m['type'], $messages_types))
+			{
+				unset($_SESSION['ay']['flash']['messages']);
+			
+				throw new HelperException('Invalid message type.');
+			}
+			else if(empty($m['message']))
+			{
+				unset($_SESSION['ay']['flash']['messages']);
+			
+				throw new HelperException('Message cannot be empty.');
+			}
+		
+			$return .= '<li class="' . $m['type'] . '">' . $m['message'] . '</li>';
 		}
+		
+		$return	= '<ul>' . $return . '</ul>';
     }
     
-	return empty($return) ? '' : '<div class="ay-message-placeholder">' . $return . '</div>';
+	return '<div class="ay-message-placeholder">' . $return . '</div>';
 }
 
 /**
  * @author Gajus Kuizinas <g.kuizinas@anuary.com>
- * @version 1.4 (2012 08 16)
+ * @version 1.5.0 (2012 11 24)
  */
 function error_present()
 {
-	return !empty($_SESSION['ay']['flash']['messages'][MESSAGE_ERROR]);
+	return !empty($_SESSION['ay']['flash']['messages']) && count(array_filter($_SESSION['ay']['flash']['messages'], function($e){ return $e['type'] === 'error'; }));
 }
 
 /**
  * @author Gajus Kuizinas <g.kuizinas@anuary.com>
- * @version 1.0.6 (2012 08 16)
+ * @version 1.0.7 (2012 10 15)
  */
-function redirect($url = REDIRECT_REFERRER, $message_text = NULL, $message_type = MESSAGE_ERROR)
+function redirect($url = REDIRECT_REFERRER, $message_text = NULL, $message_type = 'error')
 {
 	// If there aren't any error, then clear the persistent user input.
 	if(!error_present())
@@ -123,16 +143,16 @@ function redirect($url = REDIRECT_REFERRER, $message_text = NULL, $message_type 
     
     if(headers_sent())
 	{
-		throw new HelpersException('Redirect failed. Headers already sent.');
+		throw new HelperException('Redirect failed. Headers already sent.');
 	}
 
     if($url === REDIRECT_REFERRER)
-    {    
-		$url	= empty($_SERVER['HTTP_REFERER']) ? BASE_URL : $_SERVER['HTTP_REFERER'];
+    {
+		$url	= empty($_SERVER['HTTP_REFERER']) ? constant('URL_' . mb_strtoupper(INTERFACE_END)) : $_SERVER['HTTP_REFERER'];
     }
     elseif(strpos($url, 'http://') !== 0 && strpos($url, 'https://') !== 0)
     {
-    	$url	= BASE_URL . $url;
+    	$url	= rtrim(constant('URL_' . mb_strtoupper(INTERFACE_END)), '/') . '/' . $url;
     }
 
     header('Location: ' . $url);
@@ -218,7 +238,7 @@ function input($name, $label, array $input_options = NULL, array $row_options = 
 		case 'select':
 			if(empty($input_options['options']))
 			{
-				throw new HelpersException('Select input is missing options array.');
+				throw new HelperException('Select input is missing options array.');
 			}
 		
 			$option_str	= '';
@@ -248,7 +268,7 @@ function input($name, $label, array $input_options = NULL, array $row_options = 
 		case 'radio':
 			if(!array_key_exists('value', $input_options))
 			{
-				throw new HelpersException('Radio input is missing value parameter.');
+				throw new HelperException('Radio input is missing value parameter.');
 			}
 			
 			$input_options['value']		= (int) $input_options['value'];
@@ -306,7 +326,7 @@ function input($name, $label, array $input_options = NULL, array $row_options = 
 			break;
 			
 		default:
-			throw new HelpersException('input(); unknown return type `' . $return_options['return'] . '`.');
+			throw new HelperException('input(); unknown return type `' . $return_options['return'] . '`.');
 			break;
 	}
 	
@@ -404,4 +424,4 @@ function error_exception_handler()
 	return FALSE;
 }
 
-class HelpersException extends \Exception {}
+class HelperException extends \Exception {}

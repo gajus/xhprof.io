@@ -10,7 +10,7 @@ $request			= $xhprof_data_obj->get($_GET['xhprof']['query']['request_id']);
 
 if(!$request)
 {
-	\ay\redirect(AY_REDIRECT_REFERRER, 'Request data not found.');
+	\ay\redirect(\ay\REDIRECT_REFERRER, 'Request data not found.');
 }
 
 $xhprof_obj			= new Model($request);

@@ -10,7 +10,7 @@ require __DIR__ . '/form.inc.tpl.php';
 
 if(empty($data['discrete']))
 {
-	\ay\message('No results matching your search were found.', \AY\MESSAGE_NOTICE);
+	\ay\message('No results matching your search were found.', 'notice');
 
 	return;
 }

@@ -1,29 +1,44 @@
 <?php
 namespace ay\xhprof;
 
-\ay\message('Pie charts are underway. If you have ideas how to make pie charts use less space, yet keeping them informative, kindly express your ideas to <a href="mailto:g.kuizinas@anuary.com">g.kuizinas@anuary.com</a> or contribute to <a href="https://github.com/anuary/ay-pie-chart">pie-chart</a> Git.', \AY\MESSAGE_NOTICE);
+\ay\message('Pie charts are underway. If you have ideas how to make pie charts use less space, yet keeping them informative, kindly express your ideas to <a href="mailto:g.kuizinas@anuary.com">g.kuizinas@anuary.com</a> or contribute to <a href="https://github.com/anuary/ay-pie-chart">pie-chart</a> Git.', 'notice');
 
 $grouped_stack	= $xhprof_obj->getGroupedStack();
 
-$sort_by		= function($name) use ($grouped_stack)
+$sort_stack_by	= function($metric_name) use ($grouped_stack)
 {
-	usort($grouped_stack, function($a, $b) use ($name){
-		if($a['metrics'][$name] == $b['metrics'][$name])
-		{
-			return 0;
-		}
-		
-		return $a['metrics'][$name] > $b['metrics'][$name] ? -1 : 1;
+	usort($grouped_stack, function($a, $b) use ($metric_name){
+		return $b['metrics'][$metric_name] - $a['metrics'][$metric_name];
 	});
 	
 	return $grouped_stack;
 };
 
-$get_values		= function($name, $limit = 5) use ($sort_by)
+$get_values		= function($metric_name, $limit = 5) use ($sort_stack_by)
 {
-	$data		= array_map(function($e) use ($name) { $e['value'] = $e['metrics'][$name]; unset($e['metrics']); return $e; }, $sort_by($name));
+	$data			= $sort_stack_by($metric_name);
 	
-	$displayed	= array_slice($data, 0, $limit);
+	$total_value	= 0;
+	
+	foreach($data as &$e)
+	{
+		$e['value']			= $e['metrics'][$metric_name];
+		
+		$total_value		+= $e['value'];
+		
+		unset($e['metrics'], $e);
+	}
+	
+	/*foreach($data as &$e)
+	{
+		$e['percentage']	= ($e['value']/$total_value)*100;
+		
+		unset($e);
+	}
+	
+	#$detached_data		= array_slice($data, 0, $limit);
+		
+	$displayed		= array_slice($data, 0, $limit);
 	
 	$other		= array
 	(
@@ -38,8 +53,14 @@ $get_values		= function($name, $limit = 5) use ($sort_by)
 		return $e['value'] > 0;
 	});
 	
-	return $displayed;
+	return $displayed;*/
+	
+	return $data;
 };
+
+\ay\message('This page is under development.', 'important');
+
+#\ay\ay($get_values('ct'));
 ?>
 <div class="pie-layout">
 	<svg class="pie-ct"></svg>

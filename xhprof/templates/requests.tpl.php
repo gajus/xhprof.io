@@ -7,7 +7,7 @@ if(!\ay\error_present())
 
 	if(empty($data))
 	{
-		\ay\message('No results matching your search were found.', AY_MESSAGE_NOTICE);
+		\ay\message('No results matching your search were found.', 'notice');
 	}
 }
 
@@ -54,7 +54,7 @@ require __DIR__ . '/histogram.inc.tpl.php';
 				<td class="metrics" data-ay-sort-weight="<?=$e['cpu']['raw']?>"><?=$e['cpu']['formatted']?></td>
 				<td class="metrics" data-ay-sort-weight="<?=$e['mu']['raw']?>"><?=$e['mu']['formatted']?></td>
 				<td class="metrics" data-ay-sort-weight="<?=$e['pmu']['raw']?>"><?=$e['pmu']['formatted']?></td>
-				<td data-ay-sort-weight="<?=$e['request_timestamp']?>"><?=date(\AY\FORMAT_DATETIME, $e['request_timestamp'])?></td>
+				<td data-ay-sort-weight="<?=$e['request_timestamp']?>"><?=date(\ay\FORMAT_DATETIME, $e['request_timestamp'])?></td>
 			</tr>
 			<?php endforeach;?>
 		</tbody>

@@ -35,11 +35,14 @@ class Data
 	    	ON
 	    		`ru1`.`id` = `r1`.`request_uri_id`
 	    	WHERE
-	    		`r1`.`id` = :id");
+	    		`r1`.`id` = :id
+	    	LIMIT 1;");
 	    	
 	    $sth->execute(array('id' => $id));
 	    
 	    $request	= $sth->fetch(\PDO::FETCH_ASSOC);
+	    
+	    $sth->closeCursor();
 	    
 	    if(!$request)
 	    {

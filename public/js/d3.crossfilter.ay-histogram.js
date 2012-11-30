@@ -1,13 +1,13 @@
 /**
- * Histogram v0.0.1
- * https://github.com/anuary/ay-histogram
+ * Histogram v0.0.2
+ * https://github.com/gajus/interdependent-interactive-histograms
  *
  * This function utilises d3.js (http://d3js.org/) and Crossfilter (http://square.github.com/crossfilter/)
  * to create interdependent, interactive histograms. The beauty of the code comes from the flexibility of
- * the input data. The crossfilter can have an arbitrary number of groups, or any size.
+ * the input data. The crossfilter can have an arbitrary number of groups, of any size.
  *
  * Licensed under the BSD.
- * https://github.com/anuary/ay-histogram/blob/master/LICENSE
+ * https://github.com/gajus/interdependent-interactive-histograms/blob/master/LICENSE
  *
  * Author: Gajus Kuizinas <g.kuizinas@anuary.com>
  * 
@@ -24,7 +24,7 @@ var ay_histogram	= function(name, data, options)
 {
 	'use strict';
 
-	var svg	= d3
+	var svg		= d3
 		.select('svg.' + name);
 	
 	var dimensions	=
@@ -37,15 +37,14 @@ var ay_histogram	= function(name, data, options)
 		axis:
 		{
 			x: { height: 20 }
-		},
-		graph:
-		{
-			width: svg[0][0].getBoundingClientRect().width-options.margin[0]*2
 		}
 	};
 	
-	// the magic 1 refers to the scrollbar stroke width
-	dimensions.graph.height	= svg[0][0].getBoundingClientRect().height-options.margin[1]*2-dimensions.scrollbar.height-dimensions.axis.x.height-1;
+	dimensions.graph	=
+	{
+		width: parseInt((svg[0][0].clientWidth || svg[0][0].parentNode.clientWidth)-options.margin[0]*2),
+		height: parseInt((svg[0][0].clientHeight || svg[0][0].parentNode.clientHeight)-options.margin[1]*2-dimensions.axis.x.height)-1
+	};
 	
 	var all		= data.group.all();
 	
@@ -128,25 +127,21 @@ var ay_histogram	= function(name, data, options)
 		extent: d3.extent(all, function(d){ return d.key; })
 	};
 	
-	// This is used to automatically differentiate between time scale
-	// and the quantitative scale. Note that this version will die in agony
-	// if your time scale is bin size is not equal to one day.
+	// This is used to automatically differentiate between time scale and the quantitative scale.
 	if(typeof all[0].key === 'object')
 	{
 		if(!options.bin_width)
 		{
-			options.bin_width	= 1000*3600*24; // defaults to one day in miliseconds
+			options.bin_width	= 1000*3600*24;
 		}
 	
 		// cannot use all.length because crossfilter data length does not reflect date-gaps
 		var bins			= Math.round((x.extent[1].getTime()-x.extent[0].getTime())/options.bin_width);
 		
-		var graph_width		= (bins+1) * dimensions.brush.bar.width
-		
-		// create the upper data boundry
-		x.extent[1]			= new Date(x.extent[1].getTime() + options.bin_width);
+		var upper_boundry	= new Date(x.extent[1].getTime() + options.bin_width);
+		var optimized_graph_width		= (bins+1) * dimensions.brush.bar.width;
 	
-		x.scale				= d3.time.scale().domain(x.extent).rangeRound([0, graph_width]);	
+		x.scale				= d3.time.scale().domain([x.extent[0], upper_boundry]).rangeRound([0, optimized_graph_width]);	
 	}
 	else
 	{
@@ -155,13 +150,13 @@ var ay_histogram	= function(name, data, options)
 			throw 'bin_width is a required option for non-timescale histogram.';
 		}
 		
-		var upper_boundry	= x.extent[1]+options.bin_width;
-		var graph_width		= ((upper_boundry-x.extent[0])/options.bin_width)*dimensions.brush.bar.width;
+		var upper_boundry			= x.extent[1]+options.bin_width;
+		var optimized_graph_width	= ((upper_boundry-x.extent[0])/options.bin_width)*dimensions.brush.bar.width;
 		
-		x.scale				= d3.scale.linear().domain([x.extent[0], upper_boundry]).rangeRound([0, graph_width]);
+		x.scale				= d3.scale.linear().domain([x.extent[0], upper_boundry]).rangeRound([0, optimized_graph_width]);
 	}
 	
-	// place a tick roughly every #px
+	// place a tick roughly every # px
 	if(!options.tick_width)
 	{
 		options.tick_width	= 50;
@@ -170,7 +165,7 @@ var ay_histogram	= function(name, data, options)
 	x.axis	= d3.svg.axis()
 		.tickPadding(5)
 		.tickSize(5)
-		.ticks( Math.floor(graph_width/options.tick_width) )
+		.ticks(Math.floor(optimized_graph_width/options.tick_width))
 		.scale(x.scale);
 	
 	if(typeof options != 'undefined' && options.x_axis_format)
@@ -213,69 +208,30 @@ var ay_histogram	= function(name, data, options)
 				.attr('width', function(){ return dimensions.brush.bar.width-1; })
 				.attr('x', function(d){ return x.scale(d.key); });
 	
-	graph
-		.append('g')
-			.attr('class', 'axis x')
-			.attr('transform', 'translate(0,' + dimensions.graph.height + ')')
-			.call(x.axis);
 	
-	var y_axis	= svg
-		.append('g')
-			.attr('class', 'axis y')
-			.attr('transform', 'translate(' + options.margin.join(',') + ')');
-	
-	// brush
-	var clippath_brush	= svg.append('clipPath')
-		.attr('id', 'ay-clippath-brush-' + name)
-			.append('rect')
-			.attr('height', dimensions.graph.height);
-	
-	brush.d3	= d3.svg.brush()
-		.x(x.scale)
-			.on('brush', brush.events.brush)
-			.on('brushend', brush.events.brushend)
-	
-	brush.g	= graph
-		.append('g')
-			.attr('class', 'brush')
-			.call(brush.d3);
-			
-	brush.g
-		.select('rect.background')
-			.attr('width', graph_width);
-			
-	brush.g
-		.selectAll('rect')
-			.attr('height', dimensions.graph.height);
-		
-	brush.g
-		.selectAll('.resize')
-			.append('path')
-				.attr('d', brush.resize_path);
 	
 	// scrollbar
-	if(dimensions.graph.width/graph_width < 1)
+	if(dimensions.graph.width/optimized_graph_width < 1)
 	{
+		dimensions.graph.height	-= dimensions.scrollbar.height;
+	
 		var drag	=
 		{
-			event: 	d3.behavior.drag().on('drag', function(){
-				var scrollbar_x		= parseInt(scrollbar.attr('x'));
-				var move_x			= scrollbar_x+d3.event.dx;
-				
-				drag.logic(move_x);
+			event: d3.behavior.drag().on('drag', function(){
+				drag.move(parseInt(scrollbar.attr('x'))+d3.event.dx);
 			}),
 			// param	int	move_x The present scrollbar handle X value.
-			logic: function(move_x)
+			move: function(move_x)
 			{
-				var max_offset	= graph_width-dimensions.graph.width;
+				var max_offset	= optimized_graph_width-dimensions.graph.width;
 				var move_width	= dimensions.graph.width-scrollbar_width;
 				
-				// if overscrllod to the left, stick to left-most position
+				// if overscrolled to the left, stick to left-most position
 				if(move_x < 0)
 				{
 					move_x	= 0;
 				}
-				// if overscrllod to the right, stick to right-most position
+				// if overscrolled to the right, stick to right-most position
 				else if(move_x > move_width)
 				{
 					move_x	= move_width;
@@ -291,7 +247,7 @@ var ay_histogram	= function(name, data, options)
 			}
 		};		
 		
-		var scrollbar_width		= Math.floor((dimensions.graph.width/graph_width)*dimensions.graph.width);
+		var scrollbar_width		= Math.floor((dimensions.graph.width/optimized_graph_width)*dimensions.graph.width);
 		
 		if(scrollbar_width < 50)
 		{
@@ -317,8 +273,49 @@ var ay_histogram	= function(name, data, options)
 			.attr('y', 0)
 			.call(drag.event);
 		
-		drag.logic(dimensions.graph.width);
-	}
+		drag.move(dimensions.graph.width);
+	}	
+	
+	graph
+		.append('g')
+			.attr('class', 'axis x')
+			.attr('transform', 'translate(0,' + dimensions.graph.height + ')')
+			.call(x.axis);
+	
+	
+	var y_axis	= svg
+		.append('g')
+			.attr('class', 'axis y')
+			.attr('transform', 'translate(' + options.margin.join(',') + ')');
+	
+	// brush
+	var clippath_brush	= svg.append('clipPath')
+		.attr('id', 'ay-clippath-brush-' + name)
+			.append('rect')
+			.attr('height', dimensions.graph.height);
+	
+	brush.d3	= d3.svg.brush()
+		.x(x.scale)
+			.on('brush', brush.events.brush)
+			.on('brushend', brush.events.brushend)
+	
+	brush.g	= graph
+		.append('g')
+			.attr('class', 'brush')
+			.call(brush.d3);
+			
+	brush.g
+		.select('rect.background')
+			.attr('width', optimized_graph_width);
+			
+	brush.g
+		.selectAll('rect')
+			.attr('height', dimensions.graph.height);
+		
+	brush.g
+		.selectAll('.resize')
+			.append('path')
+				.attr('d', brush.resize_path);
 	
 	var render	= function(stage)
 	{

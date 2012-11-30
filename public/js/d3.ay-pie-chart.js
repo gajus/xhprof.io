@@ -1,9 +1,9 @@
 /**
- * Pie Chart v0.0.2
- * https://github.com/anuary/ay-pie-chart
+ * Pie Chart v0.0.4
+ * https://github.com/gajus/pie-chart
  *
  * Licensed under the BSD.
- * https://github.com/anuary/ay-pie-chart/blob/master/LICENSE
+ * https://github.com/gajus/pie-chart/blob/master/LICENSE
  *
  * Author: Gajus Kuizinas <g.kuizinas@anuary.com>
  */
@@ -13,26 +13,25 @@ var ay_pie_chart	= function(name, data, options, debug)
 	
 	var svg	= d3
 		.select('svg.' + name);
-		
-	// The svg element is expected to be a square.
-	var size			= svg[0][0].getBoundingClientRect().width;
+	
+	var size			= svg[0][0].clientWidth || svg[0][0].parentNode.clientWidth;
 	
 	var radius_outer	= size/3;
 	var radius_inner	= 50;
 	
 	if(typeof options != 'undefined')
 	{
-		if(typeof options.radius_outer != 'undefined')
+		if(options.radius_outer)
 		{
 			radius_outer	= options.radius_outer;
 		}
 		
-		if(typeof options.radius_inner != 'undefined')
+		if(options.radius_inner)
 		{
 			radius_inner	= options.radius_inner;
 		}
 	
-		if(typeof options.label != 'undefined')
+		if(options.label)
 		{
 			var label	= svg
 				.append('g')

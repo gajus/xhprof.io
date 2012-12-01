@@ -186,43 +186,99 @@ html {
   overflow: hidden;
   margin: 20px;
 }
-.pie-layout svg {
-  width: 200px;
-  height: 200px;
+.pie-layout .chart {
+  width: 300px;
+  height: 300px;
   float: left;
   margin: 0 20px 0 0;
   background: #F3F3F3;
   border: 1px solid #E3E3E3;
 }
-.pie-layout .slice path.g-1 {
+.pie-layout svg {
+  width: 100%;
+  height: 100%;
+}
+.pie-layout path.g-1 {
   fill: #1f77b4;
 }
-.pie-layout .slice path.g-2 {
+.pie-layout path.g-2 {
+  fill: #aec7e8;
+}
+.pie-layout path.g-3 {
   fill: #ff7f0e;
 }
-.pie-layout .slice path.g-3 {
+.pie-layout path.g-4 {
+  fill: #ffbb78;
+}
+.pie-layout path.g-5 {
   fill: #2ca02c;
 }
-.pie-layout .slice path.g-4 {
+.pie-layout path.g-6 {
+  fill: #98df8a;
+}
+.pie-layout path.g-7 {
   fill: #d62728;
 }
-.pie-layout .slice path.g-5 {
+.pie-layout path.g-8 {
+  fill: #ff9896;
+}
+.pie-layout path.g-9 {
   fill: #9467bd;
 }
-.pie-layout .slice path.g-6 {
+.pie-layout path.g-10 {
+  fill: #c5b0d5;
+}
+.pie-layout path.g-11 {
   fill: #8c564b;
 }
-.pie-layout .slice path.g-7 {
+.pie-layout path.g-12 {
+  fill: #c49c94;
+}
+.pie-layout path.g-13 {
   fill: #e377c2;
 }
-.pie-layout .slice path.g-8 {
+.pie-layout path.g-14 {
+  fill: #f7b6d2;
+}
+.pie-layout path.g-15 {
   fill: #7f7f7f;
 }
-.pie-layout .slice path.g-9 {
+.pie-layout path.g-16 {
+  fill: #c7c7c7;
+}
+.pie-layout path.g-17 {
   fill: #bcbd22;
 }
-.pie-layout .slice path.g-10 {
+.pie-layout path.g-18 {
+  fill: #dbdb8d;
+}
+.pie-layout path.g-19 {
   fill: #17becf;
+}
+.pie-layout path.g-20 {
+  fill: #9edae5;
+}
+.pie-layout svg > g.label {
+  text-anchor: middle;
+}
+.pie-layout svg > g.labels g.label {
+  -moz-pointer-events: none;
+  -webkit-pointer-events: none;
+  -o-pointer-events: none;
+  pointer-events: none;
+}
+.pie-layout svg > g.labels g.label rect {
+  stroke: none;
+  fill: #fff;
+  fill-opacity: .5;
+  shape-rendering: crispEdges;
+}
+.pie-layout svg > g.labels g.label text {
+  font-size: 12px;
+  text-anchor: left;
+}
+.pie-layout svg > g.labels g.label.active rect {
+  fill-opacity: 1;
 }
 .histogram-layout {
   margin: 20px;

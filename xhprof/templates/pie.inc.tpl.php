@@ -63,21 +63,31 @@ $get_values		= function($metric_name, $limit = 5) use ($sort_stack_by)
 #\ay\ay($get_values('ct'));
 ?>
 <div class="pie-layout">
-	<svg class="pie-ct"></svg>
-	<svg class="pie-wt"></svg>
-	<svg class="pie-cpu"></svg>
-	<svg class="pie-mu"></svg>
-	<svg class="pie-pmu"></svg>
+	<div class="chart">
+		<svg class="pie-ct"></svg>
+	</div>
+	<div class="chart">
+		<svg class="pie-wt"></svg>
+	</div>
+	<div class="chart">
+		<svg class="pie-cpu"></svg>
+	</div>
+	<div class="chart">
+		<svg class="pie-mu"></svg>
+	</div>
+	<div class="chart">
+		<svg class="pie-pmu"></svg>
+	</div>
 </div>
 <script type="text/javascript">
 $(function(){
-	var radius_inner	= 0;
-	var radius_outer	= 50;
+	var radius_inner = 0,
+		radius_outer = 50;
 
-	ay_pie_chart('pie-ct', <?=json_encode($get_values('ct'))?>, {radius_inner: radius_inner, radius_outer: radius_outer});
-	ay_pie_chart('pie-wt', <?=json_encode($get_values('wt'))?>, {radius_inner: radius_inner, radius_outer: radius_outer});
-	ay_pie_chart('pie-cpu', <?=json_encode($get_values('cpu'))?>, {radius_inner: radius_inner, radius_outer: radius_outer});
-	ay_pie_chart('pie-mu', <?=json_encode($get_values('mu'))?>, {radius_inner: radius_inner, radius_outer: radius_outer});
-	ay_pie_chart('pie-pmu', <?=json_encode($get_values('pmu'))?>, {radius_inner: radius_inner, radius_outer: radius_outer});
+	ay.pie_chart('pie-ct', <?=json_encode($get_values('ct'))?>, {radius_inner: radius_inner, radius_outer: radius_outer});
+	ay.pie_chart('pie-wt', <?=json_encode($get_values('wt'))?>, {radius_inner: radius_inner, radius_outer: radius_outer});
+	ay.pie_chart('pie-cpu', <?=json_encode($get_values('cpu'))?>, {radius_inner: radius_inner, radius_outer: radius_outer});
+	ay.pie_chart('pie-mu', <?=json_encode($get_values('mu'))?>, {radius_inner: radius_inner, radius_outer: radius_outer});
+	ay.pie_chart('pie-pmu', <?=json_encode($get_values('pmu'))?>, {radius_inner: radius_inner, radius_outer: radius_outer});
 });
 </script>

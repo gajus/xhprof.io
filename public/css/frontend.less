@@ -121,22 +121,37 @@ body, html { margin: 0; font: normal 12px/20px 'Lucida Grande', Arial, Sans-Seri
 {
 	overflow: hidden; margin: 20px;
 	
-	svg { width: 200px; height: 200px; float: left; margin: 0 20px 0 0; background: #F3F3F3; border: 1px solid #E3E3E3; }
+	.chart { width: 300px; height: 300px; float: left; margin: 0 20px 0 0; background: #F3F3F3; border: 1px solid #E3E3E3; }
 
-	.slice path
-	{
-		&.g-1 { fill: #1f77b4; }
-		&.g-2 { fill: #ff7f0e; }
-		&.g-3 { fill: #2ca02c; }
-		&.g-4 { fill: #d62728; }
-		&.g-5 { fill: #9467bd; }
-		&.g-6 { fill: #8c564b; }
-		&.g-7 { fill: #e377c2; }
-		&.g-8 { fill: #7f7f7f; }
-		&.g-9 { fill: #bcbd22; }
-		&.g-10 { fill: #17becf; }
-
-	}	
+	svg { width: 100%; height: 100%; }
+	
+	path.g-1 { fill: #1f77b4; }
+	path.g-2 { fill: #aec7e8; }
+	path.g-3 { fill: #ff7f0e; }
+	path.g-4 { fill: #ffbb78; }
+	path.g-5 { fill: #2ca02c; }
+	path.g-6 { fill: #98df8a; }
+	path.g-7 { fill: #d62728; }
+	path.g-8 { fill: #ff9896; }
+	path.g-9 { fill: #9467bd; }
+	path.g-10 { fill: #c5b0d5; }
+	path.g-11 { fill: #8c564b; }
+	path.g-12 { fill: #c49c94; }
+	path.g-13 { fill: #e377c2; }
+	path.g-14 { fill: #f7b6d2; }
+	path.g-15 { fill: #7f7f7f; }
+	path.g-16 { fill: #c7c7c7; }
+	path.g-17 { fill: #bcbd22; }
+	path.g-18 { fill: #dbdb8d; }
+	path.g-19 { fill: #17becf; }
+	path.g-20 { fill: #9edae5; }
+	
+	svg > g.label { text-anchor: middle; }
+	
+	svg > g.labels g.label { -moz-pointer-events: none; -webkit-pointer-events: none; -o-pointer-events: none; pointer-events: none; }
+	svg > g.labels g.label rect { stroke: none; fill: #fff; fill-opacity: .5; shape-rendering: crispEdges; }
+	svg > g.labels g.label text { font-size: 12px; text-anchor: left; }
+	svg > g.labels g.label.active rect { fill-opacity: 1; }
 }
 
 .histogram-layout

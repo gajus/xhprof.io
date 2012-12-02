@@ -1,5 +1,5 @@
 /**
- * Pie Chart v0.0.8
+ * Pie Chart v0.1.0
  * https://github.com/gajus/pie-chart
  *
  * Licensed under the BSD.
@@ -21,7 +21,8 @@ ay.pie_chart	= function (name, data, options) {
 			radius_outer: chart_size / 3,
 			radius_label: chart_size / 3 + 20,
 			percentage: true,
-			label_margin: 10
+			label_margin: 10,
+			group_data: 0
 		},
 		donut,
 		arc,
@@ -59,13 +60,43 @@ ay.pie_chart	= function (name, data, options) {
 						.attr('x', 2)
 						.attr('y', 2);
 				});
+		},
+		group_data = function (data) {
+			var data_size = 0,
+				removed_data_size = 0,
+				i;
+			data.forEach(function (e) {
+				data_size += e.value;
+			});
+			// Check if it is worth grouping the data.
+			for (i = data.length-1; i >= 0; i--) {
+				if ((data[i].value / data_size) * 100 < settings.group_data) {
+					removed_data_size++;
+				}
+			}
+			if(removed_data_size > 1) {
+				removed_data_size = 0;
+				for (i = data.length-1; i >= 0; i--) {
+					if ((data[i].value / data_size) * 100 < settings.group_data) {
+						removed_data_size += data.splice(i, 1)[0].value;
+					}
+				}
+			}
+			data.push({index: 0, name: 'Other', value: removed_data_size});
+			return data;
 		};
+	if (data.map(function (d) { return d.index; }).indexOf(0) !== -1) {
+		throw '0 index is reserved for grouped data.'
+	}
 	if (options !== undefined) {
 		for (parameter in options) {
 			if (options.hasOwnProperty(parameter) && settings[parameter] !== undefined) {
 				settings[parameter]		= options[parameter];
 			}
 		}
+	}
+	if (settings.group_data) {
+		data = group_data(data);
 	}
 	donut = svg
 		.append('g')

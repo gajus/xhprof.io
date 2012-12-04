@@ -1,15 +1,17 @@
 <?php
 namespace ay\xhprof;
 
+use PDO;
+
 class Data
 {
 	private $db;
 
-	public function __construct(\PDO $db)
+	public function __construct(PDO $db)
 	{		
-		$db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, FALSE);
-		$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-		$db->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, FALSE);
+		$db->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
+		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		$db->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, FALSE);
 		
 		$this->db	= $db;
 	}
@@ -40,7 +42,7 @@ class Data
 	    	
 	    $sth->execute(array('id' => $id));
 	    
-	    $request	= $sth->fetch(\PDO::FETCH_ASSOC);
+	    $request	= $sth->fetch(PDO::FETCH_ASSOC);
 	    
 	    $sth->closeCursor();
 	    
@@ -75,10 +77,10 @@ class Data
 		    ORDER BY
 		    	`c1`.`id` DESC;
 	    	");
-	    $sth->bindValue(':request_id', $request['id'], \PDO::PARAM_INT);
+	    $sth->bindValue(':request_id', $request['id'], PDO::PARAM_INT);
 	    $sth->execute();
 	    
-	    $request['callstack']	= $sth->fetchAll(\PDO::FETCH_ASSOC);
+	    $request['callstack']	= $sth->fetchAll(PDO::FETCH_ASSOC);
 	    
 	    // The data input will never change. Therefore,
 	    // I arrange all the values manually.
@@ -142,7 +144,7 @@ class Data
 		
 		$sth->execute(array('method' => $_SERVER['REQUEST_METHOD'], 'host' => $_SERVER['HTTP_HOST'], 'uri' => $_SERVER['REQUEST_URI']));
 		
-		$request	= $sth->fetchAll(\PDO::FETCH_KEY_PAIR);
+		$request	= $sth->fetchAll(PDO::FETCH_KEY_PAIR);
 
 		if(!isset($request['method_id']))
 		{
@@ -173,10 +175,10 @@ class Data
 		
 		$sth	= $this->db->prepare("INSERT INTO `requests` SET `request_host_id` = :request_host_id, `request_uri_id` = :request_uri_id, `request_method_id` = :request_method_id, `https` = :https;");
 		
-		$sth->bindValue(':request_host_id', $request['host_id'], \PDO::PARAM_INT);
-		$sth->bindValue(':request_uri_id', $request['uri_id'], \PDO::PARAM_INT);
-		$sth->bindValue(':request_method_id', $request['method_id'], \PDO::PARAM_INT);
-		$sth->bindValue(':https', empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == 'off' ? 0 : 1, \PDO::PARAM_INT);
+		$sth->bindValue(':request_host_id', $request['host_id'], PDO::PARAM_INT);
+		$sth->bindValue(':request_uri_id', $request['uri_id'], PDO::PARAM_INT);
+		$sth->bindValue(':request_method_id', $request['method_id'], PDO::PARAM_INT);
+		$sth->bindValue(':https', empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == 'off' ? 0 : 1, PDO::PARAM_INT);
 		
 		$sth->execute();
 		
@@ -188,12 +190,12 @@ class Data
 		
 		foreach($xhprof_data as $call => $data)
 		{
-			$sth1->bindValue(':request_id', $request_id, \PDO::PARAM_INT);
-			$sth1->bindValue(':ct', $data['ct'], \PDO::PARAM_INT);
-			$sth1->bindValue(':wt', $data['wt'], \PDO::PARAM_INT);
-			$sth1->bindValue(':cpu', $data['cpu'], \PDO::PARAM_INT);
-			$sth1->bindValue(':mu', $data['mu'], \PDO::PARAM_INT);
-			$sth1->bindValue(':pmu', $data['pmu'], \PDO::PARAM_INT);
+			$sth1->bindValue(':request_id', $request_id, PDO::PARAM_INT);
+			$sth1->bindValue(':ct', $data['ct'], PDO::PARAM_INT);
+			$sth1->bindValue(':wt', $data['wt'], PDO::PARAM_INT);
+			$sth1->bindValue(':cpu', $data['cpu'], PDO::PARAM_INT);
+			$sth1->bindValue(':mu', $data['mu'], PDO::PARAM_INT);
+			$sth1->bindValue(':pmu', $data['pmu'], PDO::PARAM_INT);
 			
 			$call	= explode('==>', $call);
 						
@@ -202,7 +204,7 @@ class Data
 			    // callee
 				$sth2->execute(array('name' => $call[0]));
 			    
-			    $callee_id		= $sth2->fetch(\PDO::FETCH_COLUMN);
+			    $callee_id		= $sth2->fetch(PDO::FETCH_COLUMN);
 			    
 			    $sth2->closeCursor();
 			    
@@ -213,7 +215,7 @@ class Data
 				    $callee_id	= $this->db->lastInsertId();
 			    }
 			    
-			    $sth1->bindValue(':caller_id', NULL, \PDO::PARAM_NULL);
+			    $sth1->bindValue(':caller_id', NULL, PDO::PARAM_NULL);
 				$sth1->bindValue(':callee_id', $callee_id);
 			}
 			else
@@ -221,7 +223,7 @@ class Data
 				// caller
 				$sth2->execute(array('name' => $call[0]));
 			    
-			    $caller_id		= $sth2->fetch(\PDO::FETCH_COLUMN);
+			    $caller_id		= $sth2->fetch(PDO::FETCH_COLUMN);
 			    
 			    $sth2->closeCursor();
 			    
@@ -235,7 +237,7 @@ class Data
 			    // callee
 				$sth2->execute(array('name' => $call[1]));
 			    
-			    $callee_id		= $sth2->fetch(\PDO::FETCH_COLUMN);
+			    $callee_id		= $sth2->fetch(PDO::FETCH_COLUMN);
 			    
 			    $sth2->closeCursor();
 			    
@@ -247,8 +249,8 @@ class Data
 			    }
 			    
 			
-				$sth1->bindValue(':caller_id', $caller_id, \PDO::PARAM_INT);
-				$sth1->bindValue(':callee_id', $callee_id, \PDO::PARAM_INT);
+				$sth1->bindValue(':caller_id', $caller_id, PDO::PARAM_INT);
+				$sth1->bindValue(':callee_id', $callee_id, PDO::PARAM_INT);
 			}
 			
 			$sth1->execute();
@@ -289,7 +291,7 @@ class Data
 				`host_id`
 			ORDER BY
 				`host`;
-		")->fetchAll(\PDO::FETCH_ASSOC);
+		")->fetchAll(PDO::FETCH_ASSOC);
 		
 		return $data;
 	}
@@ -319,7 +321,7 @@ class Data
 				`uri_id`
 			ORDER BY
 				`host`;
-		")->fetchAll(\PDO::FETCH_ASSOC);
+		")->fetchAll(PDO::FETCH_ASSOC);
 		
 		return $data;
 	}
@@ -330,7 +332,7 @@ class Data
 	
 		$data				= array();		
 		
-		$data['discrete']	= $this->db->query("SELECT * FROM `temporary_request_data`;")->fetchAll(\PDO::FETCH_ASSOC);
+		$data['discrete']	= $this->db->query("SELECT * FROM `temporary_request_data`;")->fetchAll(PDO::FETCH_ASSOC);
 		
 		return $data;
 	}
@@ -359,7 +361,7 @@ class Data
 			FROM
 				`temporary_request_data`;
 		")
-			->fetch(\PDO::FETCH_NUM);
+			->fetch(PDO::FETCH_NUM);
 		
 		if(!$data)
 		{
@@ -383,8 +385,8 @@ class Data
 		foreach(array('wt', 'cpu', 'mu', 'pmu') as $column)
 		{
 			// I've excluded median on purpose, because it is relatively costly calculation, arguably of any value.
-			$return[$column]['95th']	= $this->db->query("SELECT `{$column}` FROM `temporary_request_data` ORDER BY `{$column}` ASC LIMIT {$percentile_offset}, 1;")->fetch(\PDO::FETCH_COLUMN);
-			$return[$column]['mode']	= $this->db->query("SELECT `{$column}` FROM `temporary_request_data` GROUP BY `{$column}` ORDER BY COUNT(`{$column}`) DESC LIMIT 1;")->fetch(\PDO::FETCH_COLUMN);
+			$return[$column]['95th']	= $this->db->query("SELECT `{$column}` FROM `temporary_request_data` ORDER BY `{$column}` ASC LIMIT {$percentile_offset}, 1;")->fetch(PDO::FETCH_COLUMN);
+			$return[$column]['mode']	= $this->db->query("SELECT `{$column}` FROM `temporary_request_data` GROUP BY `{$column}` ORDER BY COUNT(`{$column}`) DESC LIMIT 1;")->fetch(PDO::FETCH_COLUMN);
 		}
 		
 		return $return;

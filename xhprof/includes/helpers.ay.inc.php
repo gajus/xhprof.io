@@ -43,18 +43,18 @@ function ay()
 
 /**
  * @author Gajus Kuizinas <g.kuizinas@anuary.com>
- * @version 1.4 (2012 08 16)
+ * @version 1.4.1 (2012 12 04)
  */
 function message($message, $type = 'error')
 {
-	$messages_types	= ['error', 'important', 'notice', 'success'];
+	$messages_types	= array('error', 'important', 'notice', 'success');
 	
 	if(!in_array($type, $messages_types))
 	{
 		throw new HelperException('Invalid message type.');
 	}
 	
-	$message		= ['type' => $type, 'message' => $message];
+	$message		= array('type' => $type, 'message' => $message);
 	
 	if(!empty($_SESSION['ay']['flash']['messages']) && in_array($message, $_SESSION['ay']['flash']['messages']))
 	{
@@ -66,7 +66,7 @@ function message($message, $type = 'error')
 
 /**
  * @author Gajus Kuizinas <g.kuizinas@anuary.com>
- * @version 2.3.0 (2012 11 24)
+ * @version 2.3.1 (2012 12 04)
  */
 function display_messages()
 {
@@ -79,7 +79,7 @@ function display_messages()
 	
 	$already_displayed	= TRUE;
 
-    $messages_types		= ['error', 'important', 'notice', 'success'];
+    $messages_types		= array('error', 'important', 'notice', 'success');
 	
 	$return	= '';
 	

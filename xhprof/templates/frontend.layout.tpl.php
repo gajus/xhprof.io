@@ -7,6 +7,7 @@ namespace ay\xhprof;
 	
 	<script type="text/javascript" src="public/js/jquery-1.8.2.min.js"></script>
 	
+	<script type="text/javascript" src="public/js/jquery.ay-toggle-element.js"></script>
 	<script type="text/javascript" src="public/js/jquery.ay-table-sort.js"></script>
 	<script type="text/javascript" src="public/js/jquery.ay-table-sticky.js"></script>
 	

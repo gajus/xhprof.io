@@ -4,7 +4,7 @@ body, html { margin: 0; font: normal 12px/20px 'Lucida Grande', Arial, Sans-Seri
 
 #navigation
 {
-	overflow: hidden; background: #4d7bd6; border-bottom: 1px solid #2d53af; padding-left: 20px;
+	overflow: hidden; background: #4d7bd6; border-bottom: 1px solid #2d53af; padding: 0 20px;
 	
 	> a,
 	> div
@@ -18,13 +18,20 @@ body, html { margin: 0; font: normal 12px/20px 'Lucida Grande', Arial, Sans-Seri
 		&.callgraph { background: #fff; color: #111; }
 		
 		&.button-summary,
-		&.button-filter { background: #2d53af; color: #fff; }
+		&.button-filter
+		{
+			color: #fff; float: right;
+			
+			&.active { background: #2d53af; }
+		}
 	}
 }
 
 #filter
 {
-	margin: 20px; display: none;
+	margin: 20px;
+	
+	&.hidden { display: none; }
 	
 	.columns
 	{
@@ -78,7 +85,7 @@ body, html { margin: 0; font: normal 12px/20px 'Lucida Grande', Arial, Sans-Seri
 
 #metrics-summary
 {
-	display: none;
+	&.hidden { display: none; }
 }
 
 .filters

@@ -1,15 +1,7 @@
 $(function(){
-	$('#navigation .button-filter').on('click', function(){
-		$(this).remove();
-		
-		$('#filter').show();
-	});
 	
-	$('#navigation .button-summary').on('click', function(){
-		$(this).remove();
-		
-		$('#metrics-summary').show();
-	});
+	$('#navigation .button-filter').ayToggleElement($('#filter'), {targetClass: 'hidden'});
+	$('#navigation .button-summary').ayToggleElement($('#metrics-summary'), {targetClass: 'hidden'});
 
 	$('table.ay-sort').ayTableSort();
 	$('thead.ay-sticky').ayTableSticky();

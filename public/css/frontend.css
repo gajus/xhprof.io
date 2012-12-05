@@ -10,7 +10,7 @@ html {
   overflow: hidden;
   background: #4d7bd6;
   border-bottom: 1px solid #2d53af;
-  padding-left: 20px;
+  padding: 0 20px;
 }
 #navigation > a,
 #navigation > div {
@@ -39,11 +39,19 @@ html {
 #navigation > div.button-summary,
 #navigation > a.button-filter,
 #navigation > div.button-filter {
-  background: #2d53af;
   color: #fff;
+  float: right;
+}
+#navigation > a.button-summary.active,
+#navigation > div.button-summary.active,
+#navigation > a.button-filter.active,
+#navigation > div.button-filter.active {
+  background: #2d53af;
 }
 #filter {
   margin: 20px;
+}
+#filter.hidden {
   display: none;
 }
 #filter .columns {
@@ -108,7 +116,7 @@ html {
   float: left;
   line-height: 27px;
 }
-#metrics-summary {
+#metrics-summary.hidden {
   display: none;
 }
 .filters {

@@ -11,8 +11,11 @@ class Data
 	{		
 		$db->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
 		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		$db->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, FALSE);
 		
+		if ($db->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+			$db->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, FALSE);
+		}
+
 		$this->db	= $db;
 	}
  

@@ -1,5 +1,5 @@
 /**
- * jQuery toggle-element v0.0.2
+ * jQuery toggle-element v0.0.4
  * https://github.com/gajus/toggle-element
  *
  * Licensed under the BSD.
@@ -9,30 +9,30 @@
  */
 (function ($) {
 	'use strict';
-	$.fn.ayToggleElement = function (target, options) {
+	$.ay = $.ay || {};
+	$.ay.toggleElement = function (options) {
 		var trigger = this,
-			target_id,
 			setState,
 			settings = $.extend({
 				triggerClass: 'active', // the class that is given to the trigger when the element is active
 				targetClass: 'visible' // the class that is given to the target when the target is active
 			}, options);
-		if (!target || !target instanceof $ || target.length !== 1) {
-			throw 'Target is not defined, it is not instance of jQuery, it does not exist or more than once instance of the element is present.';
-		}
-		target_id = target.attr('id');
-		if (!target_id) {
-			throw 'Element visibility cannot be tracked if the target element does not have unique ID.';
+		
+		if (!settings.target || !settings.target instanceof $) {
+			throw 'Target is not defined or it is not instance of jQuery.';
 		}
 		setState = function (state) {
-			trigger.toggleClass(settings.triggerClass, state);
-			target.toggleClass(settings.targetClass, state);
-			localStorage['ay.state.' + target_id] = state ? 'on' : 'off';
+			settings.trigger.toggleClass(settings.triggerClass, state);
+			settings.target.toggleClass(settings.targetClass, state);
+			if (typeof window.localStorage !== 'undefined') {
+				localStorage['ay.toggleElement.' + settings.target.selector] = state ? 'on' : 'off';
+			}
 		};
-		setState(localStorage['ay.state.' + target_id] === 'on');
-		trigger.on('click', function () {
-			setState(!target.hasClass(settings.targetClass));
+		if (typeof window.localStorage !== 'undefined') {
+			setState(localStorage['ay.toggleElement.' + settings.target.selector] === 'on');
+		}
+		settings.trigger.on('click', function () {
+			setState(!settings.target.eq(0).hasClass(settings.targetClass));
 		});
 	};
 }($));
-

@@ -1,20 +1,17 @@
 <?php
 namespace ay\xhprof;
 
-if(!\ay\error_present())
-{
+if (!\ay\error_present()) {
 	$data	= $xhprof_data_obj->getUris($_GET['xhprof']['query']);
 	
-	if(empty($data))
-	{
+	if (empty($data)) {
 		\ay\message('No results matching your search were found.', 'notice');
 	}
 }
 
 require __DIR__ . '/form.inc.tpl.php';
 
-if(empty($data['discrete']))
-{
+if (empty($data['discrete'])) {
 	return;
 }
 
@@ -44,9 +41,9 @@ require __DIR__ . '/summary.inc.tpl.php';
 			?>
 			<tr>
 				<?php if(empty($_GET['ay']['query']['host_id'])):?>
-				<td data-ay-sort-weight="<?=htmlspecialchars($e['host'])?>"><a href="<?=url('uris', array('host_id' => $e['host_id']))?>"><?=htmlspecialchars($e['host'])?></a></td>
+				<td><a href="<?=url('uris', array('host_id' => $e['host_id']))?>"><?=htmlspecialchars($e['host'])?></a></td>
 				<?php endif;?>
-				<td data-ay-sort-weight="<?=htmlspecialchars($e['uri'])?>"><a href="<?=url('requests', array('host_id' => $e['host_id'], 'uri_id' => $e['uri_id']))?>"><?=htmlspecialchars($e['uri'])?></a></td>
+				<td><a href="<?=url('requests', array('host_id' => $e['host_id'], 'uri_id' => $e['uri_id']))?>"><?=htmlspecialchars($e['uri'])?></a></td>
 				<td class="metrics" data-ay-sort-weight="<?=$e['request_count']['raw']?>"><?=$e['request_count']['formatted']?></td>
 				<td class="metrics" data-ay-sort-weight="<?=$e['wt']['raw']?>"><?=$e['wt']['formatted']?></td>
 				<td class="metrics" data-ay-sort-weight="<?=$e['cpu']['raw']?>"><?=$e['cpu']['formatted']?></td>

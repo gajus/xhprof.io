@@ -1,24 +1,23 @@
 /**
- * jQuery table-sort v0.0.9
- * https://github.com/anuary/jquery-table-sort
+ * jQuery table-sort v0.1.1
+ * https://github.com/gajus/table-sort
  *
  * Licensed under the BSD.
- * https://github.com/anuary/jquery-table-sort/blob/master/LICENSE
+ * https://github.com/gajus/table-sort/blob/master/LICENSE
  *
- * Author: Gajus Kuizinas @anuary
+ * Author: Gajus Kuizinas <g.kuizinas@anuary.com>
  */
-(function($){
-	$.fn.ayTableSort	= function(options)
-	{
+(function ($) {
+	$.ay = $.ay || {};
+	$.ay.tableSort	= function (options) {
 		var settings	= $.extend({
 			'debug': false
 		}, options);
 		
 		// @param	object	columns	NodeList table colums.
 		// @param	integer	row_width	defines the number of columns per row.
-		var table_to_array	= function(columns, row_width){
-			if(settings.debug)
-			{
+		var table_to_array	= function (columns, row_width) {
+			if (settings.debug) {
 				console.time('table to array');
 			}
 		
@@ -27,19 +26,16 @@
 			var rows		= [];
 			var row_index	= 0;
 			
-			for(var i = 0, j = columns.length; i < j; i += row_width)
-			{
+			for (var i = 0, j = columns.length; i < j; i += row_width) {
 				var row	= [];
 				
-				for(var k = 0, l = row_width; k < l; k++)
-				{
+				for (var k = 0, l = row_width; k < l; k++) {
 					var e			= columns[i+k];
 					
 					var data		= e.dataset.aySortWeight;
 					
-					if(data === undefined)
-					{
-						var data	= e.innerHTML;
+					if (data === undefined) {
+						var data	= e.textContent || e.innerText;
 					}
 					
 					var number	= parseFloat(data);
@@ -52,32 +48,31 @@
 				rows.push({index: row_index++, data: row});
 			}
 			
-			if(settings.debug)
-			{
+			if (settings.debug) {
 				console.timeEnd('table to array');
 			}
 			
 			return rows;
 		};
 		
-		this.each(function(){
+		if (!settings.target || !settings.target instanceof $) {
+			throw 'Target is not defined or it is not instance of jQuery.';
+		}
+		
+		settings.target.each(function () {
 			var table		= $(this);
 			
-			table.find('thead th.ay-sort').on('click', function()
-			{
+			table.find('thead th.ay-sort').on('click', function () {
 				// Cannot use .siblings() because th might be not under the same <tr>
 				$(this).parents('thead').find('th').not($(this)).removeClass('ay-sort-asc ay-sort-desc');
 				
 				var desc;
 				
-				if($(this).hasClass('ay-sort-asc'))
-				{
+				if ($(this).hasClass('ay-sort-asc')) {
 					$(this).removeClass('ay-sort-asc').addClass('ay-sort-desc');
 					
 					desc	= 1;
-				}
-				else
-				{
+				} else {
 					$(this).removeClass('ay-sort-desc').addClass('ay-sort-asc');
 					
 					desc	= 0;
@@ -85,8 +80,7 @@
 				
 				var index	= $(this).data('ay-sort-index') === undefined ? $(this).index() : $(this).data('ay-sort-index');
 				
-				table.find('tbody:not(.ay-sort-no)').each(function()
-				{
+				table.find('tbody:not(.ay-sort-no)').each(function () {
 					var tbody	= $(this);
 					
 					var rows		= this.rows;
@@ -95,29 +89,25 @@
 					
 					var columns		= this.getElementsByTagName('td');
 					
-					if(this.data_matrix === undefined)
-					{
+					if (this.data_matrix === undefined) {
 						this.data_matrix	= table_to_array(columns, $(rows[0]).find('td').length);
 					}
 					
 					var data			= this.data_matrix;
 					
-					if(settings.debug)
-					{
+					if (settings.debug) {
 						console.time('sort data');
 					}
 					
-					data.sort(function(a, b){
-						if(a.data[index] == b.data[index])
-						{
+					data.sort(function (a, b) {
+						if (a.data[index] == b.data[index]) {
 							return 0;
 						}
 						
 						return (desc ? a.data[index] > b.data[index] : a.data[index] < b.data[index]) ? -1 : 1;
 					});
 										
-					if(settings.debug)
-					{
+					if (settings.debug) {
 						console.timeEnd('sort data');
 						console.time('build table');
 					}
@@ -134,8 +124,7 @@
 					
 					var last_row	= rows[data[data.length-1].index];
 					
-					for(var i = 0, j = data.length-1; i < j; i++)
-					{
+					for (var i = 0, j = data.length-1; i < j; i++) {
 						tbody[0].insertBefore(rows[data[i].index], last_row);
 						
 						// Restore the index.
@@ -150,8 +139,7 @@
 					table.append(tbody);
 					
 					
-					if(settings.debug)
-					{
+					if (settings.debug) {
 						console.timeEnd('build table');
 					}
 				});

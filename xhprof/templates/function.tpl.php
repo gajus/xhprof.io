@@ -38,7 +38,7 @@ $table_row			= function($e) use ($request)
 	<tr<?php if($e['internal']):?> class="internal"<?php endif;?>>
 		<td><a href="<?=url('function', array('request_id' => $request['id'], 'callee_id' => $e['callee_id']))?>"><?=$e['callee']?></a></td>
 		
-		<td class="metrics" data-ay-sort-weight="<?=$e['metrics']['ct']['raw']?>"><?=$e['metrics']['ct']['raw']?></td>
+		<td class="metrics" data-ay-sort-weight="<?=$e['metrics']['ct']['raw']?>"><?=$e['metrics']['ct']['formatted']?></td>
 		<td class="metrics" data-ay-sort-weight="<?=$e['metrics']['ct']['raw']*100/$request['total']['ct']?>"><?=format_number($e['metrics']['ct']['raw']*100/$request['total']['ct'])?>%</td>
 		
 		<td class="metrics" data-ay-sort-weight="<?=$e['metrics']['exclusive']['wt']['raw']?>"><?=$e['metrics']['exclusive']['wt']['formatted']?></td>

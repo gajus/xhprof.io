@@ -5,7 +5,7 @@ namespace ay\xhprof;
 <head>
 	<link rel="stylesheet" href="public/css/frontend.css" type="text/css" charset="utf-8">
 	
-	<script type="text/javascript" src="public/js/jquery-1.8.2.min.js"></script>
+	<script type="text/javascript" src="public/js/jquery-1.8.3.min.js"></script>
 	
 	<script type="text/javascript" src="public/js/jquery.ay-toggle-element.js"></script>
 	<script type="text/javascript" src="public/js/jquery.ay-table-sort.js"></script>

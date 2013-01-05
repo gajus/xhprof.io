@@ -2,7 +2,7 @@ $(function(){
 	var alternate;
 	$.ay.toggleElement({trigger: $('#navigation .button-filter'), target: $('#filter'), targetClass: 'hidden'});
 	$.ay.toggleElement({trigger: $('#navigation .button-summary'), target: $('#metrics-summary'),targetClass: 'hidden'});
-	$('table.ay-sort').ayTableSort();
+	$.ay.tableSort({target: $('table.ay-sort'), debug: false});
 	$('thead.ay-sticky').ayTableSticky();
 	if ($('table.aggregated-callstack').length) {
 		alternate = $('[data-ay-alternate]');

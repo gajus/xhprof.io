@@ -3,7 +3,7 @@ $(function(){
 	$.ay.toggleElement({trigger: $('#navigation .button-filter'), target: $('#filter'), targetClass: 'hidden'});
 	$.ay.toggleElement({trigger: $('#navigation .button-summary'), target: $('#metrics-summary'),targetClass: 'hidden'});
 	$.ay.tableSort({target: $('table.ay-sort'), debug: false});
-	$('thead.ay-sticky').ayTableSticky();
+	$.ay.tableSticky({target: $('thead.ay-sticky')});
 	if ($('table.aggregated-callstack').length) {
 		alternate = $('[data-ay-alternate]');
 		alternate.on('ay-alternate', function (e, stage) {

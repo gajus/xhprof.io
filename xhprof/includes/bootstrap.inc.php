@@ -17,7 +17,7 @@ define('VERSION', '0.0.0');
 define('BASE_PATH', realpath(__DIR__ . '/..'));
 
 // These constants are required to maintain
-// compatability with the "ay" framework components.
+// compatibility with the "ay" framework components.
 define('ay\DEBUG', !empty($_SESSION['ay']['debug']));
 
 define('ay\REDIRECT_REFERRER', 1);

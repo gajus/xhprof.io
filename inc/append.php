@@ -7,7 +7,7 @@ if(php_sapi_name() == 'cli')
 
 register_shutdown_function(function(){
 	// by registering register_shutdown_function at the end of the file
-	// I make sure that all excution data, including that of the earlier
+	// I make sure that all execution data, including that of the earlier
 	// registered register_shutdown_function, is collected.
 
 	$xhprof_data	= xhprof_disable();

@@ -5,7 +5,7 @@ class Callgraph
 {
 	/**
 	 * param	array	$callstack	The callstack must have UIDs.
-	 * param	boolean	$outupt	TRUE will output the content to the stdout and set the Content-Type to text/plain
+	 * param	boolean	$output	TRUE will output the content to the stdout and set the Content-Type to text/plain
 	 * param	boolean	$debug	TRUE will output a less complicated DOT script.
 	 */
 	public function dot($callstack, $output = FALSE, $debug = FALSE)

@@ -27,7 +27,7 @@ if(!in_array($_GET['xhprof']['template'], $templates))
 $template['file']	= $_GET['xhprof']['template'];
 
 // This additional step is taken to make URLs pretty. I am aware that [] should be urlencoded. However,
-// that makes the URLs unreadable. It is handly to be able to emmend parameters directly in the URL query.
+// that makes the URLs unreadable. It is handy to be able to amend parameters directly in the URL query.
 // Furthermore, this strips out empty parameters.
 if(!empty($_POST['ay']['query']))
 {

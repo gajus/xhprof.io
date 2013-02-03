@@ -31,8 +31,6 @@ class Model
 	 * for a function is therefore the sum of inclusive metrics for the
 	 * function across all parents.
 	 *
-	 * @param	array	$whilelist Function IDs to include to the metrics. This will also include the parents and children of the whitelisted functions.
-	 *
 	 * @author	Gajus Kuizinas <g.kuizinas@anuary.com>
 	 */	
 	private function computeInclusiveMetrics()
@@ -70,7 +68,6 @@ class Model
 	 * inclusive and exclusive metrics.
 	 *
 	 * @author	Gajus Kuizinas <g.kuizinas@anuary.com>
-	 * @param	int	$function_id	Defines the "current function." This will limit the output to parent function, current function ($function_id) and any direct children.
 	 */
 	public function getAggregatedStack()
 	{
@@ -105,7 +102,7 @@ class Model
 	}
 	
 	/**
-	 * @return	array	Aggregated metrics for the $callee_id, callers and children.
+	 * @return	array	$callee_id	Aggregated metrics for the $callee_id, callers and children.
 	 */
 	public function getFamily($callee_id)
 	{	
@@ -192,7 +189,7 @@ class Model
 			// UID is used to determine the child-parent relation in an exclusive callgraph.
 			$e['uid']	= implode('_', $e['parents']);
 			
-			// Unless we were looking to build an inclusive callgraph, this data is reduntant. We are not.
+			// Unless we were looking to build an inclusive callgraph, this data is redundant. We are not.
 			unset($e['parents']);
 			
 			return $e;

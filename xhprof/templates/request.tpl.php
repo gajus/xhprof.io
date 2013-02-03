@@ -57,7 +57,7 @@ require __DIR__ . '/pie.inc.tpl.php';
 $fn_metrics_column	= function($parameter, $group)
 {
 	// The following globals refer to the variables within the foreach loop.
-	// The $a is the present request. [$b the secont request. $c the difference ($b-$a).]
+	// The $a is the present request. [$b the second request. $c the difference ($b-$a).]
 	global $a, $b, $c;
 	
 	$weight		=  $a['metrics'][$group][$parameter]['raw'];

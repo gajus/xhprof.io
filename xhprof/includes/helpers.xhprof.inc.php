@@ -77,7 +77,7 @@ function format_number($number)
 		
 		if(!--$cap)
 		{
-			// the number is too small to be relavent
+			// the number is too small to be relevant
 			break;
 		}
 		

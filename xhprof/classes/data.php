@@ -129,7 +129,6 @@ class Data
     
 	/**
 	 * @param	array	$xhprof_data	The raw XHProf data.
-	 * @param	boolean	$request_data
 	 */
 	public function save(array $xhprof_data)
 	{
@@ -381,7 +380,7 @@ class Data
 		);
 		
 		// I've tried so much more sophisticated approaches to calculate the Nth percentile,
-		// though with larg datasets that's virtually impossible (+30s). See b40d38b commit.
+		// though with large datasets that's virtually impossible (+30s). See b40d38b commit.
 		
 		$percentile_offset	= floor($return['request_count']*.95);
 		

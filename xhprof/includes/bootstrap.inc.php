@@ -34,7 +34,10 @@ require BASE_PATH . '/includes/helpers.xhprof.inc.php';
 set_exception_handler('ay\error_exception_handler');
 set_error_handler('ay\error_exception_handler');
 
-$config	= require BASE_PATH . '/includes/config.inc.php';
+if(!isset($config) || !is_array($config))
+{
+    $config	= require BASE_PATH . '/includes/config.inc.php';
+}
 
 if (!isset($config['base_url'], $config['pdo'])) {
 	throw new \Exception('XHProf.io is not configured. Refer to /xhprof/includes/config.inc.php.');

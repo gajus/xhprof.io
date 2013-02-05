@@ -45,11 +45,12 @@ require __DIR__ . '/form.inc.tpl.php';
 
 require __DIR__ . '/pie.inc.tpl.php';
 
-$fn_metrics_column	= function ($parameter, $group) {
-	// The following globals refer to the variables within the foreach loop.
-	// The $a is the present request. [$b the second request. $c the difference ($b-$a).]
-	global $a, $b, $c;
-	
+/**
+ * @param array $a Present request metrics.
+ * @param array $b Request to compare to.
+ * @param array $c The difference between $a and $b.
+ */
+$fn_metrics_column	= function ($parameter, $group, $a, $b, $c) {
 	$weight		=  $a['metrics'][$group][$parameter]['raw'];
 	$metrics	= '<div class="metrics-parameter">' . $a['metrics'][$group][$parameter]['formatted'] . '</div>';
 	
@@ -100,6 +101,9 @@ $fn_metrics_column	= function ($parameter, $group) {
 			<?php
 			foreach($aggregated_stack as $i => $a):				
 				
+				$b = null;
+				$c = null;
+				
 				if (isset($second_aggregated_stack)) {
 					// Both aggregated callstacks have exactly the same scheme and order of the execution.
 					$b	= $second_aggregated_stack[$i];
@@ -141,15 +145,15 @@ $fn_metrics_column	= function ($parameter, $group) {
 					<td><a href="<?=url('function', array('request_id' => $request['id'], 'callee_id' => $a['callee_id']))?>"><?=$a['callee']?></a><?php if($a['group']):?><span class="group g-<?=$a['group']['index']?>"><?=$a['group']['name']?></span><?php endif;?></td>
 					<td class="metrics" data-ay-sort-weight="<?=$a['metrics']['ct']['raw']?>"><?=$a['metrics']['ct']['formatted']?></td>
 					
-					<?=$fn_metrics_column('wt', 'inclusive')?>
-					<?=$fn_metrics_column('cpu', 'inclusive')?>
-					<?=$fn_metrics_column('mu', 'inclusive')?>
-					<?=$fn_metrics_column('pmu', 'inclusive')?>
+					<?=$fn_metrics_column('wt', 'inclusive', $a, $b, $c)?>
+					<?=$fn_metrics_column('cpu', 'inclusive', $a, $b, $c)?>
+					<?=$fn_metrics_column('mu', 'inclusive', $a, $b, $c)?>
+					<?=$fn_metrics_column('pmu', 'inclusive', $a, $b, $c)?>
 					
-					<?=$fn_metrics_column('wt', 'exclusive')?>
-					<?=$fn_metrics_column('cpu', 'exclusive')?>
-					<?=$fn_metrics_column('mu', 'exclusive')?>
-					<?=$fn_metrics_column('pmu', 'exclusive')?>
+					<?=$fn_metrics_column('wt', 'exclusive', $a, $b, $c)?>
+					<?=$fn_metrics_column('cpu', 'exclusive', $a, $b, $c)?>
+					<?=$fn_metrics_column('mu', 'exclusive', $a, $b, $c)?>
+					<?=$fn_metrics_column('pmu', 'exclusive', $a, $b, $c)?>
 				</tr>
 				<?php if($i === 0):?>
 		</tfoot>

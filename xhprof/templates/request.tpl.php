@@ -1,22 +1,19 @@
 <?php
 namespace ay\xhprof;
 
-if(empty($_GET['xhprof']['query']['request_id']))
-{
+if (empty($_GET['xhprof']['query']['request_id'])) {
 	throw new \Exception('Request data can be accessed only through the ID.');
 }
 
 $request			= $xhprof_data_obj->get($_GET['xhprof']['query']['request_id']);
 
-if(!$request)
-{
+if (!$request) {
 	\ay\redirect(\ay\REDIRECT_REFERRER, 'Request data not found.');
 }
 
 $xhprof_obj			= new Model($request);
 
-if(!empty($_GET['xhprof']['callgraph']))
-{
+if (!empty($_GET['xhprof']['callgraph'])) {
 	$xhprof_callgraph	= new Callgraph;
 	
 	$callstack	= $xhprof_obj->assignUID();
@@ -28,20 +25,14 @@ if(!empty($_GET['xhprof']['callgraph']))
 
 $aggregated_stack	= $xhprof_obj->getAggregatedStack();
 
-if(isset($_GET['xhprof']['query']['second_request_id']))
-{
+if (isset($_GET['xhprof']['query']['second_request_id'])) {
 	$second_request				= $xhprof_data_obj->get($_GET['xhprof']['query']['second_request_id']);
 
-	if(!$second_request)
-	{
+	if (!$second_request) {
 		\ay\redirect(\ay\REDIRECT_REFERRER, 'Second request data not found.');
-	}
-	else if(array_map(function($e){ return $e['callee_id']; }, $request['callstack']) !== array_map(function($e){ return $e['callee_id']; }, $second_request['callstack']))
-	{
+	} else if(array_map(function($e){ return $e['callee_id']; }, $request['callstack']) !== array_map(function($e){ return $e['callee_id']; }, $second_request['callstack'])) {
 		\ay\redirect(\ay\REDIRECT_REFERRER, 'Cannot compare the two requests. The callstack does not match.');
-	}
-	else if($request == $second_request)
-	{
+	} else if($request == $second_request) {
 		\ay\redirect(\ay\REDIRECT_REFERRER, 'Cannot compare the request to itself.');
 	}
 	
@@ -54,8 +45,7 @@ require __DIR__ . '/form.inc.tpl.php';
 
 require __DIR__ . '/pie.inc.tpl.php';
 
-$fn_metrics_column	= function($parameter, $group)
-{
+$fn_metrics_column	= function ($parameter, $group) {
 	// The following globals refer to the variables within the foreach loop.
 	// The $a is the present request. [$b the second request. $c the difference ($b-$a).]
 	global $a, $b, $c;
@@ -63,17 +53,14 @@ $fn_metrics_column	= function($parameter, $group)
 	$weight		=  $a['metrics'][$group][$parameter]['raw'];
 	$metrics	= '<div class="metrics-parameter">' . $a['metrics'][$group][$parameter]['formatted'] . '</div>';
 	
-	if(isset($b))
-	{
+	if (isset($b)) {
 		$weight		= $c['metrics'][$group][$parameter]['raw'];
 		
-		if($c['metrics'][$group][$parameter]['raw'] !== 0)
-		{
+		if ($c['metrics'][$group][$parameter]['raw'] !== 0) {
 			$prefix	= '';
 			$class 	= 'change-decrease';
 			
-			if($c['metrics'][$group][$parameter]['raw'] > 0)
-			{
+			if ($c['metrics'][$group][$parameter]['raw'] > 0) {
 				$prefix	= '+';
 				$class 	= 'change-increase';
 			}
@@ -113,46 +100,41 @@ $fn_metrics_column	= function($parameter, $group)
 			<?php
 			foreach($aggregated_stack as $i => $a):				
 				
-				if(isset($second_aggregated_stack))
-				{
+				if (isset($second_aggregated_stack)) {
 					// Both aggregated callstacks have exactly the same scheme and order of the execution.
 					$b	= $second_aggregated_stack[$i];
 					
 					// calculate the relative change from A to B.
-					$c	= array
-					(
-						'metrics'	=> array
-						(
-							'ct'		=> $b['metrics']['ct']-$a['metrics']['ct']['raw'],
-							'inclusive'	=> array
-							(
-								'wt'	=> $b['metrics']['inclusive']['wt']-$a['metrics']['inclusive']['wt'],
-								'cpu'	=> $b['metrics']['inclusive']['cpu']-$a['metrics']['inclusive']['cpu'],
-								'mu'	=> $b['metrics']['inclusive']['mu']-$a['metrics']['inclusive']['mu'],
-								'pmu'	=> $b['metrics']['inclusive']['pmu']-$a['metrics']['inclusive']['pmu']
+					$c	= array(
+						'metrics' => array(
+							'ct' => $b['metrics']['ct']-$a['metrics']['ct']['raw'],
+							'inclusive' => array(
+								'wt' => $b['metrics']['inclusive']['wt']-$a['metrics']['inclusive']['wt'],
+								'cpu' => $b['metrics']['inclusive']['cpu']-$a['metrics']['inclusive']['cpu'],
+								'mu' => $b['metrics']['inclusive']['mu']-$a['metrics']['inclusive']['mu'],
+								'pmu' => $b['metrics']['inclusive']['pmu']-$a['metrics']['inclusive']['pmu']
 							),
-							'exclusive'	=> array
-							(
-								'wt'	=> $b['metrics']['exclusive']['wt']-$a['metrics']['exclusive']['wt'],
-								'cpu'	=> $b['metrics']['exclusive']['cpu']-$a['metrics']['exclusive']['cpu'],
-								'mu'	=> $b['metrics']['exclusive']['mu']-$a['metrics']['exclusive']['mu'],
-								'pmu'	=> $b['metrics']['exclusive']['pmu']-$a['metrics']['exclusive']['pmu']
+							'exclusive' => array(
+								'wt' => $b['metrics']['exclusive']['wt']-$a['metrics']['exclusive']['wt'],
+								'cpu' => $b['metrics']['exclusive']['cpu']-$a['metrics']['exclusive']['cpu'],
+								'mu' => $b['metrics']['exclusive']['mu']-$a['metrics']['exclusive']['mu'],
+								'pmu' => $b['metrics']['exclusive']['pmu']-$a['metrics']['exclusive']['pmu']
 							)
 						)
 					);
 					
-					$b['metrics']				= format_metrics($b['metrics']);
-					$b['metrics']['inclusive']	= format_metrics($b['metrics']['inclusive']);
-					$b['metrics']['exclusive']	= format_metrics($b['metrics']['exclusive']);
+					$b['metrics'] = format_metrics($b['metrics']);
+					$b['metrics']['inclusive'] = format_metrics($b['metrics']['inclusive']);
+					$b['metrics']['exclusive'] = format_metrics($b['metrics']['exclusive']);
 					
-					$c['metrics']				= format_metrics($c['metrics']);
-					$c['metrics']['inclusive']	= format_metrics($c['metrics']['inclusive']);
-					$c['metrics']['exclusive']	= format_metrics($c['metrics']['exclusive']);
+					$c['metrics'] = format_metrics($c['metrics']);
+					$c['metrics']['inclusive'] = format_metrics($c['metrics']['inclusive']);
+					$c['metrics']['exclusive'] = format_metrics($c['metrics']['exclusive']);
 				}
 				
-				$a['metrics']				= format_metrics($a['metrics']);
-				$a['metrics']['inclusive']	= format_metrics($a['metrics']['inclusive']);
-				$a['metrics']['exclusive']	= format_metrics($a['metrics']['exclusive']);
+				$a['metrics'] = format_metrics($a['metrics']);
+				$a['metrics']['inclusive'] = format_metrics($a['metrics']['inclusive']);
+				$a['metrics']['exclusive'] = format_metrics($a['metrics']['exclusive']);
 				
 				?>
 				<tr>

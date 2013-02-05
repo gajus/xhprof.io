@@ -144,26 +144,31 @@ function format_microseconds($time, $format = TRUE)
 }
 
 /**
- * This is a helper function to quickly apply output formatting to the raw XHProf metrics data.
+ * @param data|int $data Raw XHProf metrics data or specific metric value when $name is provided.
+ * @param string $name Metrics name will force return data formatted just for the selected metrics.
  */
-function format_metrics(array $data)
+function format_metrics($data, $name = null)
 {
-	$format	= array
-	(
-		'request_count'	=> '\number_format',
+	$format	= array(
+		'request_count' => '\number_format',
 		
-		'ct'			=> 'ay\xhprof\format_number',
-		'wt'			=> 'ay\xhprof\format_microseconds',
-		'cpu'			=> 'ay\xhprof\format_microseconds',
-		'mu'			=> 'ay\xhprof\format_bytes',
-		'pmu'			=> 'ay\xhprof\format_bytes'
+		'ct' => 'ay\xhprof\format_number',
+		'wt' => 'ay\xhprof\format_microseconds',
+		'cpu' => 'ay\xhprof\format_microseconds',
+		'mu' => 'ay\xhprof\format_bytes',
+		'pmu' => 'ay\xhprof\format_bytes'
 	);
 	
-	foreach($data as $k => $v)
-	{
-		if(isset($format[$k]))
-		{
-			$data[$k]	= array('raw' => $v, 'formatted' => call_user_func($format[$k], $v));
+	if ($name) {
+		if (!isset($format[$name])) {
+			throw new HelpersException('Invalid metrics parameter "' . $name . '".');
+		}
+		return array('raw' => $data, 'formatted' => call_user_func($format[$name], $data));
+	}
+	
+	foreach ($data as $k => $v) {
+		if (isset($format[$k])) {
+			$data[$k] = array('raw' => $v, 'formatted' => call_user_func($format[$k], $v));
 		}
 	}
 	

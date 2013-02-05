@@ -38,11 +38,15 @@ if (file_exists(BASE_PATH . '/includes/config.inc.php') && !isset($config)) {
     $config	= require BASE_PATH . '/includes/config.inc.php';
 }
 
-if (!isset($config['base_url'], $config['pdo'])) {
+if (!isset($config['url_base'], $config['pdo'])) {
 	throw new \Exception('XHProf.io is not configured. Refer to /xhprof/includes/config.inc.sample.php.');
 }
 
-define('BASE_URL', $config['base_url']);
+if (!isset($config['url_static'])) {
+	$config['url_static'] = $config['url_base'] . 'public/';
+}
+
+define('BASE_URL', $config['url_base']);
 
 // This class is likely already included by php.ini prepend/append settings
 require_once BASE_PATH . '/classes/data.php';

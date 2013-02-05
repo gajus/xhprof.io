@@ -34,8 +34,15 @@ require BASE_PATH . '/includes/helpers.xhprof.inc.php';
 set_exception_handler('ay\error_exception_handler');
 set_error_handler('ay\error_exception_handler');
 
-if (file_exists(BASE_PATH . '/includes/config.inc.php') && !isset($config)) {
+$config = array();
+
+if (file_exists(BASE_PATH . '/includes/config.inc.php')) {
     $config	= require BASE_PATH . '/includes/config.inc.php';
+}
+
+// Allow to overwrite default configuration in execution environment.
+if (isset($xhprof_config)) {
+	$config = array_merge($config, $xhprof_config);
 }
 
 if (!isset($config['url_base'], $config['pdo'])) {

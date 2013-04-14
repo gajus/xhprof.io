@@ -469,6 +469,7 @@ class Data
 	 * 
 	 * @param	array	$query User-input used to generate the query WHERE and LIMIT clause.
 	 * @param	array	$whitelist	Is required whenever any of the filters (currently, self::getHosts only) does not support either of the standard $query parameters.
+	 * @todo add BTREE indexes
 	 */
 	private function aggregateRequestData($query, array $whitelist = array())
 	{

@@ -477,51 +477,51 @@ class Data
 		
 		$sql_query				= $this->buildQuery($query, $whitelist);
 		
-		$sth					= $this->db->prepare("
-		CREATE TEMPORARY TABLE `temporary_request_data` ENGINE=InnoDB AS
-		(
+		$data_query = "
 			SELECT
-				`r1`.`id` `request_id`,
+				r1.id request_id,
+				UNIX_TIMESTAMP(r1.request_timestamp) request_timestamp,
 				
-				`rh1`.`id` `host_id`,
-				`rh1`.`host`,
+				rh1.id host_id,
+				rh1.host,
 				
-				`ru1`.`id` `uri_id`,
-				`ru1`.`uri`,
+				ru1.id uri_id,
+				ru1.uri,
 				
-				`rm1`.`method` `request_method`,
+				rm1.method request_method,
 				
-				`c1`.`wt`,
-				`c1`.`cpu`,
-				`c1`.`mu`,
-				`c1`.`pmu`,
-				
-				UNIX_TIMESTAMP(`r1`.`request_timestamp`) `request_timestamp`
+				c1.wt,
+				c1.cpu,
+				c1.mu,
+				c1.pmu
 			FROM
-				`requests` `r1`
+				requests r1
 			INNER JOIN
-				`request_uris` `ru1`
+				request_hosts rh1
 			ON
-				`ru1`.`id` = `r1`.`request_uri_id`
+				rh1.id = r1.request_host_id
 			INNER JOIN
-				`request_methods` `rm1`
+				request_uris ru1
 			ON
-				`rm1`.`id` = `r1`.`request_method_id`
+				ru1.id = r1.request_uri_id
 			INNER JOIN
-				`request_hosts` `rh1`
+				request_methods rm1
 			ON
-				`rh1`.`id` = `r1`.`request_host_id`
+				rm1.id = r1.request_method_id
 			INNER JOIN
-				`calls` `c1`
+				calls c1
 			ON 
-				`c1`.`id` = `r1`.`request_caller_id`
+				c1.id = r1.request_caller_id
 			WHERE
 				1=1 {$sql_query['where']}
-			ORDER BY
-				`r1`.`id` DESC
-			LIMIT :dataset_size
-		);
-		");
+			LIMIT
+				:dataset_size
+		";
+		
+		#header('Content-Type: text/plain'); die(var_dump($data_query));
+		#header('Content-Type: text/plain'); $sth = $this->db->prepare($data_query); $sth->execute(['dataset_size' => 1000]); die(var_dump($sth->fetchAll(PDO::FETCH_ASSOC)));
+		
+		$sth = $this->db->prepare("CREATE TEMPORARY TABLE `temporary_request_data` ENGINE=InnoDB AS ({$data_query});");
 		
 		$sth->execute($query);
 	}

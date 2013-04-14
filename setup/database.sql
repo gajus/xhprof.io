@@ -1,13 +1,13 @@
 # ************************************************************
 # Sequel Pro SQL dump
-# Version 3408
+# Version 4004
 #
 # http://www.sequelpro.com/
 # http://code.google.com/p/sequel-pro/
 #
-# Host: 127.0.0.1 (MySQL 5.5.28)
+# Host: 127.0.0.1 (MySQL 5.5.30)
 # Database: 2012 09 16 xhprof
-# Generation Time: 2012-11-30 14:19:44 +0000
+# Generation Time: 2013-04-14 14:23:23 +0000
 # ************************************************************
 
 
@@ -132,8 +132,8 @@ CREATE TABLE `requests` (
   KEY `request_method_id` (`request_method_id`),
   KEY `request_timestamp` (`request_timestamp`),
   KEY `request_uri_id` (`request_uri_id`,`request_caller_id`),
+  KEY `temporary_request_data` (`request_host_id`,`request_uri_id`,`request_method_id`,`request_caller_id`),
   CONSTRAINT `requests_ibfk_3` FOREIGN KEY (`request_method_id`) REFERENCES `request_methods` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `requests_ibfk_4` FOREIGN KEY (`request_host_id`) REFERENCES `request_hosts` (`id`) ON DELETE CASCADE,
   CONSTRAINT `requests_ibfk_5` FOREIGN KEY (`request_uri_id`) REFERENCES `request_uris` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

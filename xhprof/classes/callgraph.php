@@ -67,19 +67,19 @@ class Callgraph
 					' . $ct . '
 					<tr>
 						<td align="left">wt</td>
-						<td align="left" bgcolor="0.000 ' . sprintf('%.3f', $e['metrics']['wt']/$mother['metrics']['wt']) . ' 1.000">' . format_microseconds($e['metrics']['wt'], FALSE) . '</td>
+						<td align="left" bgcolor="0.000 ' . sprintf('%.3f', $mother['metrics']['wt'] ? $e['metrics']['wt']/$mother['metrics']['wt'] : 0) . ' 1.000">' . format_microseconds($e['metrics']['wt'], false) . '</td>
 					</tr>
 					<tr>
 						<td align="left">cpu</td>
-						<td align="left" bgcolor="0.000 ' . sprintf('%.3f', $e['metrics']['cpu']/$mother['metrics']['cpu']) . ' 1.000">' . format_microseconds($e['metrics']['cpu'], FALSE) . '</td>
+						<td align="left" bgcolor="0.000 ' . sprintf('%.3f', $mother['metrics']['cpu'] ? $e['metrics']['cpu']/$mother['metrics']['cpu'] : 0) . ' 1.000">' . format_microseconds($e['metrics']['cpu'], false) . '</td>
 					</tr>
 					<tr>
 						<td align="left">mu</td>
-						<td align="left" bgcolor="0.000 ' . sprintf('%.3f', $e['metrics']['mu']/$mother['metrics']['mu']) . ' 1.000">' . format_bytes($e['metrics']['mu'], 2, FALSE) . '</td>
+						<td align="left" bgcolor="0.000 ' . sprintf('%.3f', $mother['metrics']['mu'] ? $e['metrics']['mu']/$mother['metrics']['mu'] : 0) . ' 1.000">' . format_bytes($e['metrics']['mu'], 2, false) . '</td>
 					</tr>
 					<tr>
 						<td align="left">pmu</td>
-						<td align="left" bgcolor="0.000 ' . sprintf('%.3f', $e['metrics']['pmu']/$mother['metrics']['pmu']) . ' 1.000">' . format_bytes($e['metrics']['pmu'], 2, FALSE) . '</td>
+						<td align="left" bgcolor="0.000 ' . sprintf('%.3f', $mother['metrics']['pmu'] ? $e['metrics']['pmu']/$mother['metrics']['pmu'] : 0) . ' 1.000">' . format_bytes($e['metrics']['pmu'], 2, false) . '</td>
 					</tr>
 				</table>
 				>];';

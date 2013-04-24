@@ -1,0 +1,6 @@
+{
+  "name": "gajus/xhprof.io",
+  "autoload": {
+    "classmap": ["xhprof/classes"]
+  }
+}

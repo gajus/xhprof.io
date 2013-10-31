@@ -2,5 +2,11 @@
   "name": "gajus/xhprof.io",
   "autoload": {
     "classmap": ["xhprof/classes"]
+  },
+  "require": {
+	"php": ">=5.3.3",
+	"ext-PDO": "*",
+        "ext-pdo_mysql": "*",
+	"ext-curl": "*"
   }
 }
